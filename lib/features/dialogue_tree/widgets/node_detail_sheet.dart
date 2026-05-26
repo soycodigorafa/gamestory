@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../domain/entities/condition.dart';
 import '../../../domain/entities/dialogue_node.dart';
@@ -124,6 +126,16 @@ class NodeDetailSheet extends StatelessWidget {
             const SizedBox(height: 6),
           ],
         const SizedBox(height: 24),
+        GsButton(
+          label: 'Play from here',
+          icon: Icons.play_arrow,
+          variant: GsButtonVariant.primary,
+          onPressed: () {
+            Navigator.of(context).pop();
+            context.push(AppRoutes.playbackPath(projectId, node.id));
+          },
+        ),
+        const SizedBox(height: 8),
         Row(
           children: [
             Expanded(

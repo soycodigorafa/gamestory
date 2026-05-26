@@ -388,7 +388,16 @@ Wire components together into full screens and set up routing. No real data — 
 - [x] Responsive layout shell — bottom nav (mobile) / rail (tablet) / side drawer (desktop)
 - [x] Smooth transitions and screen-level error/empty states
 
-### Milestone 3 — Data Layer & Business Logic
+### Milestone 3 — Dialogue Play Mode
+Add an interactive playback/preview mode that lets authors simulate a dialogue tree end-to-end using stub data. No real DB — all state is in-memory.
+
+- [x] "Play" entry point on Project detail screen (plays from root node) and on any individual node in the tree (plays from that node)
+- [x] Playback screen — shows current speaker + dialogue text, lists child branches as tappable choices
+- [x] In-memory playback state — tracks current node, visited nodes, simulated triggered item unlocks and evaluated conditions (no real DB)
+- [x] "Restart" and "Back" controls; dead-end screen when a leaf node is reached
+- [x] Visual indicator for nodes that would be gated (condition not met) using stub flag values
+
+### Milestone 4 — Data Layer & Business Logic
 Replace all stub data with real persistence. Implement the full Drift schema, repositories, and Riverpod ViewModels.
 
 - [ ] Drift database setup (`AppDatabase`, all 7 tables, migration v1)
@@ -403,14 +412,14 @@ Replace all stub data with real persistence. Implement the full Drift schema, re
 - [ ] Node ↔ condition requirement linking connected to UI
 - [ ] `NoOpCloudSyncService` wired into provider graph
 
-### Milestone 4 — Progress & Export
+### Milestone 5 — Progress & Export
 - [ ] Milestone/achievement system with live progress tracking
 - [ ] Completion animation on milestone unlock
 - [ ] JSON export (full project → `.gamestory.json`)
 - [ ] JSON import (restore a project from file)
 - [ ] Responsive layout polish (phone vs tablet vs desktop breakpoints)
 
-### Milestone 5 — Cloud & Extended Formats
+### Milestone 6 — Cloud & Extended Formats
 - [ ] Cloud sync backend integration (Firebase / Supabase / Appwrite — TBD)
 - [ ] Cross-device project sync
 - [ ] Ink export (`.ink`)

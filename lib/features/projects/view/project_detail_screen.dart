@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../shared/utils/stub_data.dart';
+import '../../../domain/entities/dialogue_node.dart';
+import '../../../shared/widgets/gs_button.dart';
 import '../../conditions/view/conditions_screen.dart';
 import '../../dialogue_tree/view/dialogue_tree_screen.dart';
 import '../../items/view/items_screen.dart';
@@ -33,6 +37,12 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
     _tabController = TabController(length: _tabs.length, vsync: this);
   }
 
+  List<DialogueNode> _rootNodes(String projectId) =>
+      StubData.nodesForProject(projectId)
+          .where((n) => n.parentId == null)
+          .toList()
+        ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -51,6 +61,23 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen>
       appBar: AppBar(
         backgroundColor: AppColors.background,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          if (_rootNodes(widget.projectId).isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: GsButton(
+                label: 'Play',
+                icon: Icons.play_arrow,
+                variant: GsButtonVariant.primary,
+                onPressed: () => context.push(
+                  AppRoutes.playbackPath(
+                    widget.projectId,
+                    _rootNodes(widget.projectId).first.id,
+                  ),
+                ),
+              ),
+            ),
+        ],
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
