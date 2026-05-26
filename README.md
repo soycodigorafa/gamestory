@@ -377,16 +377,16 @@ Build every reusable UI primitive in isolation. The app must be runnable as a li
 ### Milestone 2 — Composed Views & Navigation
 Wire components together into full screens and set up routing. No real data — all views driven by hardcoded stubs or in-memory state. Goal: navigate the entire app end-to-end.
 
-- [ ] `go_router` route map (all named routes defined)
-- [ ] Projects list screen (stub data)
-- [ ] Project detail screen — tabs: Tree / Items / Conditions / Milestones (stub data)
-- [ ] Dialogue tree screen — hierarchical `GsTreeNode` list (stub data)
-- [ ] Node detail bottom sheet — speaker, text, unlocks, conditions
-- [ ] Items screen — list + add/edit/delete sheet (stub data)
-- [ ] Conditions screen — list + expression editor (stub data)
-- [ ] Milestones screen — progress bar + achievement badges (stub data)
-- [ ] Responsive layout shell — bottom nav (mobile) / rail (tablet) / side drawer (desktop)
-- [ ] Smooth transitions and screen-level error/empty states
+- [x] `go_router` route map (all named routes defined)
+- [x] Projects list screen (stub data)
+- [x] Project detail screen — tabs: Tree / Items / Conditions / Milestones (stub data)
+- [x] Dialogue tree screen — hierarchical `GsTreeNode` list (stub data)
+- [x] Node detail bottom sheet — speaker, text, unlocks, conditions
+- [x] Items screen — list + add/edit/delete sheet (stub data)
+- [x] Conditions screen — list + expression editor (stub data)
+- [x] Milestones screen — progress bar + achievement badges (stub data)
+- [x] Responsive layout shell — bottom nav (mobile) / rail (tablet) / side drawer (desktop)
+- [x] Smooth transitions and screen-level error/empty states
 
 ### Milestone 3 — Data Layer & Business Logic
 Replace all stub data with real persistence. Implement the full Drift schema, repositories, and Riverpod ViewModels.

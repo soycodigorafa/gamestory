@@ -1,3 +1,4 @@
+export 'app_shell.dart';
 export 'gs_badge.dart';
 export 'gs_bottom_sheet.dart';
 export 'gs_button.dart';

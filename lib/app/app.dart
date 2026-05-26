@@ -1,7 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../features/catalogue/view/catalogue_screen.dart';
+import 'router.dart';
 import 'theme/app_theme.dart';
 
 class GameStoryApp extends StatelessWidget {
@@ -9,11 +8,11 @@ class GameStoryApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'GameStory',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark(),
-      home: kDebugMode ? const CatalogueScreen() : const Placeholder(),
+      routerConfig: appRouter,
     );
   }
 }
