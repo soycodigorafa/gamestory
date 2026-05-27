@@ -171,8 +171,8 @@ GameStory uses **Material 3** with a dark/light switchable theme. Dark mode is d
 **Component conventions:**
 - Cards: `BorderRadius.circular(12)` + 1 px border in `surfaceVariant`.
 - Interactive surfaces: `InkWell` with theme splash color.
-- Icons: `phosphor_flutter` package (outline style).
-- Fonts: `Inter` for body text, `JetBrains Mono` for dialogue text content.
+- Icons: Flutter default
+- Fonts: Flutter default
 - Long-press → `showMenu` context popup (no custom bottom sheet needed).
 
 ---
