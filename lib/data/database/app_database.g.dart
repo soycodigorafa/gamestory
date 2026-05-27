@@ -1351,6 +1351,329 @@ class DialogueChoicesTableCompanion
   }
 }
 
+class $RequirementFlagsTableTable extends RequirementFlagsTable
+    with TableInfo<$RequirementFlagsTableTable, RequirementFlagsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RequirementFlagsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _choiceIdMeta = const VerificationMeta(
+    'choiceId',
+  );
+  @override
+  late final GeneratedColumn<String> choiceId = GeneratedColumn<String>(
+    'choice_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _flagNameMeta = const VerificationMeta(
+    'flagName',
+  );
+  @override
+  late final GeneratedColumn<String> flagName = GeneratedColumn<String>(
+    'flag_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _requiredValueMeta = const VerificationMeta(
+    'requiredValue',
+  );
+  @override
+  late final GeneratedColumn<bool> requiredValue = GeneratedColumn<bool>(
+    'required_value',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("required_value" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, choiceId, flagName, requiredValue];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'requirement_flags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RequirementFlagsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('choice_id')) {
+      context.handle(
+        _choiceIdMeta,
+        choiceId.isAcceptableOrUnknown(data['choice_id']!, _choiceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_choiceIdMeta);
+    }
+    if (data.containsKey('flag_name')) {
+      context.handle(
+        _flagNameMeta,
+        flagName.isAcceptableOrUnknown(data['flag_name']!, _flagNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_flagNameMeta);
+    }
+    if (data.containsKey('required_value')) {
+      context.handle(
+        _requiredValueMeta,
+        requiredValue.isAcceptableOrUnknown(
+          data['required_value']!,
+          _requiredValueMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RequirementFlagsTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RequirementFlagsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      choiceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}choice_id'],
+      )!,
+      flagName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}flag_name'],
+      )!,
+      requiredValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}required_value'],
+      )!,
+    );
+  }
+
+  @override
+  $RequirementFlagsTableTable createAlias(String alias) {
+    return $RequirementFlagsTableTable(attachedDatabase, alias);
+  }
+}
+
+class RequirementFlagsTableData extends DataClass
+    implements Insertable<RequirementFlagsTableData> {
+  final String id;
+  final String choiceId;
+  final String flagName;
+  final bool requiredValue;
+  const RequirementFlagsTableData({
+    required this.id,
+    required this.choiceId,
+    required this.flagName,
+    required this.requiredValue,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['choice_id'] = Variable<String>(choiceId);
+    map['flag_name'] = Variable<String>(flagName);
+    map['required_value'] = Variable<bool>(requiredValue);
+    return map;
+  }
+
+  RequirementFlagsTableCompanion toCompanion(bool nullToAbsent) {
+    return RequirementFlagsTableCompanion(
+      id: Value(id),
+      choiceId: Value(choiceId),
+      flagName: Value(flagName),
+      requiredValue: Value(requiredValue),
+    );
+  }
+
+  factory RequirementFlagsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RequirementFlagsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      choiceId: serializer.fromJson<String>(json['choiceId']),
+      flagName: serializer.fromJson<String>(json['flagName']),
+      requiredValue: serializer.fromJson<bool>(json['requiredValue']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'choiceId': serializer.toJson<String>(choiceId),
+      'flagName': serializer.toJson<String>(flagName),
+      'requiredValue': serializer.toJson<bool>(requiredValue),
+    };
+  }
+
+  RequirementFlagsTableData copyWith({
+    String? id,
+    String? choiceId,
+    String? flagName,
+    bool? requiredValue,
+  }) => RequirementFlagsTableData(
+    id: id ?? this.id,
+    choiceId: choiceId ?? this.choiceId,
+    flagName: flagName ?? this.flagName,
+    requiredValue: requiredValue ?? this.requiredValue,
+  );
+  RequirementFlagsTableData copyWithCompanion(
+    RequirementFlagsTableCompanion data,
+  ) {
+    return RequirementFlagsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      choiceId: data.choiceId.present ? data.choiceId.value : this.choiceId,
+      flagName: data.flagName.present ? data.flagName.value : this.flagName,
+      requiredValue: data.requiredValue.present
+          ? data.requiredValue.value
+          : this.requiredValue,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RequirementFlagsTableData(')
+          ..write('id: $id, ')
+          ..write('choiceId: $choiceId, ')
+          ..write('flagName: $flagName, ')
+          ..write('requiredValue: $requiredValue')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, choiceId, flagName, requiredValue);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RequirementFlagsTableData &&
+          other.id == this.id &&
+          other.choiceId == this.choiceId &&
+          other.flagName == this.flagName &&
+          other.requiredValue == this.requiredValue);
+}
+
+class RequirementFlagsTableCompanion
+    extends UpdateCompanion<RequirementFlagsTableData> {
+  final Value<String> id;
+  final Value<String> choiceId;
+  final Value<String> flagName;
+  final Value<bool> requiredValue;
+  final Value<int> rowid;
+  const RequirementFlagsTableCompanion({
+    this.id = const Value.absent(),
+    this.choiceId = const Value.absent(),
+    this.flagName = const Value.absent(),
+    this.requiredValue = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RequirementFlagsTableCompanion.insert({
+    required String id,
+    required String choiceId,
+    required String flagName,
+    this.requiredValue = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       choiceId = Value(choiceId),
+       flagName = Value(flagName);
+  static Insertable<RequirementFlagsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? choiceId,
+    Expression<String>? flagName,
+    Expression<bool>? requiredValue,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (choiceId != null) 'choice_id': choiceId,
+      if (flagName != null) 'flag_name': flagName,
+      if (requiredValue != null) 'required_value': requiredValue,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RequirementFlagsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? choiceId,
+    Value<String>? flagName,
+    Value<bool>? requiredValue,
+    Value<int>? rowid,
+  }) {
+    return RequirementFlagsTableCompanion(
+      id: id ?? this.id,
+      choiceId: choiceId ?? this.choiceId,
+      flagName: flagName ?? this.flagName,
+      requiredValue: requiredValue ?? this.requiredValue,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (choiceId.present) {
+      map['choice_id'] = Variable<String>(choiceId.value);
+    }
+    if (flagName.present) {
+      map['flag_name'] = Variable<String>(flagName.value);
+    }
+    if (requiredValue.present) {
+      map['required_value'] = Variable<bool>(requiredValue.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RequirementFlagsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('choiceId: $choiceId, ')
+          ..write('flagName: $flagName, ')
+          ..write('requiredValue: $requiredValue, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1359,11 +1682,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $DialogueNodesTableTable(this);
   late final $DialogueChoicesTableTable dialogueChoicesTable =
       $DialogueChoicesTableTable(this);
+  late final $RequirementFlagsTableTable requirementFlagsTable =
+      $RequirementFlagsTableTable(this);
   late final NpcDao npcDao = NpcDao(this as AppDatabase);
   late final DialogueNodeDao dialogueNodeDao = DialogueNodeDao(
     this as AppDatabase,
   );
   late final DialogueChoiceDao dialogueChoiceDao = DialogueChoiceDao(
+    this as AppDatabase,
+  );
+  late final RequirementFlagDao requirementFlagDao = RequirementFlagDao(
     this as AppDatabase,
   );
   @override
@@ -1374,6 +1702,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     npcsTable,
     dialogueNodesTable,
     dialogueChoicesTable,
+    requirementFlagsTable,
   ];
 }
 
@@ -2111,6 +2440,208 @@ typedef $$DialogueChoicesTableTableProcessedTableManager =
       DialogueChoicesTableData,
       PrefetchHooks Function()
     >;
+typedef $$RequirementFlagsTableTableCreateCompanionBuilder =
+    RequirementFlagsTableCompanion Function({
+      required String id,
+      required String choiceId,
+      required String flagName,
+      Value<bool> requiredValue,
+      Value<int> rowid,
+    });
+typedef $$RequirementFlagsTableTableUpdateCompanionBuilder =
+    RequirementFlagsTableCompanion Function({
+      Value<String> id,
+      Value<String> choiceId,
+      Value<String> flagName,
+      Value<bool> requiredValue,
+      Value<int> rowid,
+    });
+
+class $$RequirementFlagsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $RequirementFlagsTableTable> {
+  $$RequirementFlagsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get choiceId => $composableBuilder(
+    column: $table.choiceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get flagName => $composableBuilder(
+    column: $table.flagName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get requiredValue => $composableBuilder(
+    column: $table.requiredValue,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RequirementFlagsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $RequirementFlagsTableTable> {
+  $$RequirementFlagsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get choiceId => $composableBuilder(
+    column: $table.choiceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get flagName => $composableBuilder(
+    column: $table.flagName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get requiredValue => $composableBuilder(
+    column: $table.requiredValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RequirementFlagsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RequirementFlagsTableTable> {
+  $$RequirementFlagsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get choiceId =>
+      $composableBuilder(column: $table.choiceId, builder: (column) => column);
+
+  GeneratedColumn<String> get flagName =>
+      $composableBuilder(column: $table.flagName, builder: (column) => column);
+
+  GeneratedColumn<bool> get requiredValue => $composableBuilder(
+    column: $table.requiredValue,
+    builder: (column) => column,
+  );
+}
+
+class $$RequirementFlagsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RequirementFlagsTableTable,
+          RequirementFlagsTableData,
+          $$RequirementFlagsTableTableFilterComposer,
+          $$RequirementFlagsTableTableOrderingComposer,
+          $$RequirementFlagsTableTableAnnotationComposer,
+          $$RequirementFlagsTableTableCreateCompanionBuilder,
+          $$RequirementFlagsTableTableUpdateCompanionBuilder,
+          (
+            RequirementFlagsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $RequirementFlagsTableTable,
+              RequirementFlagsTableData
+            >,
+          ),
+          RequirementFlagsTableData,
+          PrefetchHooks Function()
+        > {
+  $$RequirementFlagsTableTableTableManager(
+    _$AppDatabase db,
+    $RequirementFlagsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RequirementFlagsTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$RequirementFlagsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$RequirementFlagsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> choiceId = const Value.absent(),
+                Value<String> flagName = const Value.absent(),
+                Value<bool> requiredValue = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RequirementFlagsTableCompanion(
+                id: id,
+                choiceId: choiceId,
+                flagName: flagName,
+                requiredValue: requiredValue,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String choiceId,
+                required String flagName,
+                Value<bool> requiredValue = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RequirementFlagsTableCompanion.insert(
+                id: id,
+                choiceId: choiceId,
+                flagName: flagName,
+                requiredValue: requiredValue,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RequirementFlagsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RequirementFlagsTableTable,
+      RequirementFlagsTableData,
+      $$RequirementFlagsTableTableFilterComposer,
+      $$RequirementFlagsTableTableOrderingComposer,
+      $$RequirementFlagsTableTableAnnotationComposer,
+      $$RequirementFlagsTableTableCreateCompanionBuilder,
+      $$RequirementFlagsTableTableUpdateCompanionBuilder,
+      (
+        RequirementFlagsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $RequirementFlagsTableTable,
+          RequirementFlagsTableData
+        >,
+      ),
+      RequirementFlagsTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2121,4 +2652,6 @@ class $AppDatabaseManager {
       $$DialogueNodesTableTableTableManager(_db, _db.dialogueNodesTable);
   $$DialogueChoicesTableTableTableManager get dialogueChoicesTable =>
       $$DialogueChoicesTableTableTableManager(_db, _db.dialogueChoicesTable);
+  $$RequirementFlagsTableTableTableManager get requirementFlagsTable =>
+      $$RequirementFlagsTableTableTableManager(_db, _db.requirementFlagsTable);
 }

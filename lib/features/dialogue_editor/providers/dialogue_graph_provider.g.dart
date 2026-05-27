@@ -44,7 +44,27 @@ final dialogueChoiceRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DialogueChoiceRepositoryRef = ProviderRef<DialogueChoiceRepository>;
-String _$dialogueNodesListHash() => r'9394ef8d60941626581e0591801f87c24ab8e20b';
+String _$requirementFlagRepositoryHash() =>
+    r'16e8a269f73d7fdc0e3ca931627ae104aa1b8e41';
+
+/// See also [requirementFlagRepository].
+@ProviderFor(requirementFlagRepository)
+final requirementFlagRepositoryProvider =
+    Provider<RequirementFlagRepository>.internal(
+      requirementFlagRepository,
+      name: r'requirementFlagRepositoryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$requirementFlagRepositoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RequirementFlagRepositoryRef = ProviderRef<RequirementFlagRepository>;
+String _$requirementFlagsByChoiceHash() =>
+    r'cbc91dc8aa9e06baf77ed9d9ea5a04014839a45e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -66,6 +86,134 @@ class _SystemHash {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }
+
+/// See also [requirementFlagsByChoice].
+@ProviderFor(requirementFlagsByChoice)
+const requirementFlagsByChoiceProvider = RequirementFlagsByChoiceFamily();
+
+/// See also [requirementFlagsByChoice].
+class RequirementFlagsByChoiceFamily
+    extends Family<AsyncValue<List<RequirementFlag>>> {
+  /// See also [requirementFlagsByChoice].
+  const RequirementFlagsByChoiceFamily();
+
+  /// See also [requirementFlagsByChoice].
+  RequirementFlagsByChoiceProvider call(String choiceId) {
+    return RequirementFlagsByChoiceProvider(choiceId);
+  }
+
+  @override
+  RequirementFlagsByChoiceProvider getProviderOverride(
+    covariant RequirementFlagsByChoiceProvider provider,
+  ) {
+    return call(provider.choiceId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'requirementFlagsByChoiceProvider';
+}
+
+/// See also [requirementFlagsByChoice].
+class RequirementFlagsByChoiceProvider
+    extends AutoDisposeStreamProvider<List<RequirementFlag>> {
+  /// See also [requirementFlagsByChoice].
+  RequirementFlagsByChoiceProvider(String choiceId)
+    : this._internal(
+        (ref) => requirementFlagsByChoice(
+          ref as RequirementFlagsByChoiceRef,
+          choiceId,
+        ),
+        from: requirementFlagsByChoiceProvider,
+        name: r'requirementFlagsByChoiceProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$requirementFlagsByChoiceHash,
+        dependencies: RequirementFlagsByChoiceFamily._dependencies,
+        allTransitiveDependencies:
+            RequirementFlagsByChoiceFamily._allTransitiveDependencies,
+        choiceId: choiceId,
+      );
+
+  RequirementFlagsByChoiceProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.choiceId,
+  }) : super.internal();
+
+  final String choiceId;
+
+  @override
+  Override overrideWith(
+    Stream<List<RequirementFlag>> Function(RequirementFlagsByChoiceRef provider)
+    create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RequirementFlagsByChoiceProvider._internal(
+        (ref) => create(ref as RequirementFlagsByChoiceRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        choiceId: choiceId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<RequirementFlag>> createElement() {
+    return _RequirementFlagsByChoiceProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RequirementFlagsByChoiceProvider &&
+        other.choiceId == choiceId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, choiceId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RequirementFlagsByChoiceRef
+    on AutoDisposeStreamProviderRef<List<RequirementFlag>> {
+  /// The parameter `choiceId` of this provider.
+  String get choiceId;
+}
+
+class _RequirementFlagsByChoiceProviderElement
+    extends AutoDisposeStreamProviderElement<List<RequirementFlag>>
+    with RequirementFlagsByChoiceRef {
+  _RequirementFlagsByChoiceProviderElement(super.provider);
+
+  @override
+  String get choiceId => (origin as RequirementFlagsByChoiceProvider).choiceId;
+}
+
+String _$dialogueNodesListHash() => r'9394ef8d60941626581e0591801f87c24ab8e20b';
 
 /// See also [dialogueNodesList].
 @ProviderFor(dialogueNodesList)
@@ -311,7 +459,7 @@ class _DialogueChoicesListProviderElement
   String get npcId => (origin as DialogueChoicesListProvider).npcId;
 }
 
-String _$dialogueGraphHash() => r'1ba549d6d6ce3e6ca929fa76e36c3eb826551cb0';
+String _$dialogueGraphHash() => r'4685abb67ba65d116de42a4f5938d28e485b9576';
 
 abstract class _$DialogueGraph
     extends BuildlessAutoDisposeAsyncNotifier<DialogueGraphState> {

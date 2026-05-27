@@ -7,6 +7,7 @@ import '../../../domain/entities/dialogue_node.dart';
 import '../../../shared/widgets/gs_text_field.dart';
 import '../providers/dialogue_graph_provider.dart';
 import 'node_picker_modal.dart';
+import 'requirement_flag_sheet.dart';
 
 class NodeEditSheet extends ConsumerStatefulWidget {
   const NodeEditSheet({
@@ -169,6 +170,10 @@ class _NodeEditSheetState extends ConsumerState<NodeEditSheet> {
   }
 
   Widget _buildChoiceRow(int index, _ChoiceState choice) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+
     final targetNode = choice.targetNodeId != null
         ? widget.allNodes
             .where((n) => n.id == choice.targetNodeId)
@@ -176,6 +181,13 @@ class _NodeEditSheetState extends ConsumerState<NodeEditSheet> {
         : null;
     final targetLabel =
         targetNode?.speakerName.isEmpty == true ? 'Unnamed' : targetNode?.speakerName;
+
+    final hasSavedId = choice.originalId != null;
+    final flagsAsync = hasSavedId
+        ? ref.watch(requirementFlagsByChoiceProvider(choice.originalId!))
+        : null;
+    final hasFlags =
+        flagsAsync?.valueOrNull?.isNotEmpty == true;
 
     return Padding(
       key: ValueKey(choice.key),
@@ -214,14 +226,42 @@ class _NodeEditSheetState extends ConsumerState<NodeEditSheet> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
+          const SizedBox(width: 2),
+          IconButton(
+            icon: Icon(
+              hasFlags ? Icons.lock_rounded : Icons.lock_outline,
+              size: 16,
+              color: hasSavedId
+                  ? (hasFlags ? primary : mutedColor)
+                  : mutedColor.withValues(alpha: 0.4),
+            ),
+            tooltip: hasSavedId ? 'Requirement flags' : 'Save first to add flags',
+            onPressed: hasSavedId
+                ? () => RequirementFlagSheet.show(
+                      context,
+                      choiceId: choice.originalId!,
+                      choiceText: choice.textCtrl.text,
+                    )
+                : null,
+            visualDensity: VisualDensity.compact,
+          ),
           IconButton(
             icon: const Icon(Icons.close, size: 16),
-            onPressed: () => setState(() => _choices.removeAt(index)),
+            onPressed: () => _removeChoice(index, choice),
             visualDensity: VisualDensity.compact,
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _removeChoice(int index, _ChoiceState choice) async {
+    if (choice.originalId != null) {
+      await ref
+          .read(requirementFlagRepositoryProvider)
+          .deleteByChoiceId(choice.originalId!);
+    }
+    setState(() => _choices.removeAt(index));
   }
 
   Future<void> _pickTarget(int index, _ChoiceState choice) async {
@@ -261,7 +301,9 @@ class _NodeEditSheetState extends ConsumerState<NodeEditSheet> {
           .map((c) => c.originalId!)
           .toSet();
 
+      final flagRepo = ref.read(requirementFlagRepositoryProvider);
       for (final id in existingIds.difference(keptIds)) {
+        await flagRepo.deleteByChoiceId(id);
         await choiceRepo.delete(id);
       }
 

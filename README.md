@@ -31,8 +31,8 @@ GameStory is an offline-first tool for narrative designers and game developers t
 - **NPC canvas** — pan/zoom workspace showing all NPCs as draggable cards; long-press for edit/delete
 - **Visual node editor** — structured flow of dialogue nodes connected by arrows; toggle vertical/horizontal layout
 - **Long-press context actions** — hold any NPC card or dialogue node to get Edit / Delete (and Set as Start) options
-- **Boolean flag conditions** — gate player choices behind named flags (`flag_name = true/false`)
-- **Flag effects** — set flag values when a node is entered, enabling progression logic
+- **Requirement flags** — gate player choices behind named flags (`flag_name = true/false`)
+- **Reward flags** — set flag values when a node is entered, enabling progression logic
 - **Playback / simulation** — in-memory dialogue walk-through; locked choices are dimmed with a lock indicator
 - **Dark / light theme** — Material 3, dark by default, switchable with a single tap in the app bar
 - **JSON export** — export any NPC's dialogue graph as a portable `.gamestory.json` file
@@ -110,10 +110,10 @@ dialogue_nodes
 dialogue_choices
   id, fromNodeId, toNodeId, choiceText, sortOrder
 
-choice_flags                         -- gate a choice behind a flag value
+requirement_flags                    -- gate a choice behind a flag value
   choiceId, flagName, requiredValue (bool)
 
-node_flag_effects                    -- set a flag when a node is entered
+reward_flags                         -- set a flag when a node is entered
   nodeId, flagName, setValue (bool)
 ```
 
@@ -121,7 +121,7 @@ node_flag_effects                    -- set a flag when a node is entered
 
 - Drift database lives in the app's documents directory on every platform.
 - Repositories expose `Stream`-based APIs so the UI reactively updates on any DB write.
-- Schema migrations are versioned: v1 (npcs) → v2 (nodes + choices) → v3 (flags).
+- Schema migrations are versioned: v1 (npcs) → v2 (nodes + choices) → v3 (requirement_flags) → v4 (reward_flags).
 
 ### Repository interfaces (domain layer)
 
@@ -189,7 +189,7 @@ lib/
 │       ├── app_theme.dart             # ThemeData factory (dark + light)
 │       └── app_colors.dart            # Color token constants
 ├── domain/
-│   ├── entities/                      # Npc, DialogueNode, DialogueChoice, ChoiceFlag, NodeFlagEffect
+│   ├── entities/                      # Npc, DialogueNode, DialogueChoice, RequirementFlag, RewardFlag
 │   └── repositories/                  # Abstract interfaces
 ├── data/
 │   ├── database/
@@ -291,7 +291,7 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] Long-press `NpcCard` → context menu (Edit, Delete)
 - [x] Create / rename / delete NPC flows
 
-### M3 — Dialogue Node Editor
+### M3 — Dialogue Node Editor *(complete)*
 - [x] `DialogueNode`, `DialogueChoice` entities + repository interfaces
 - [x] Drift tables + DAOs + `DriftDialogueNodeRepository` (DB migration v2)
 - [x] `dialogueGraphProvider` (`AsyncNotifier`)
@@ -301,21 +301,25 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] `NodeEditSheet`: speaker, text, manage outgoing choices
 - [x] Node picker modal to connect choices to target nodes
 
-### M4 — Flag Requirements & Effects
-- [ ] `ChoiceFlag`, `NodeFlagEffect` entities + repository interfaces
-- [ ] Drift tables + DAOs (DB migration v3)
-- [ ] `ChoiceFlagSheet`: add/remove `flagName = true/false` requirements on a choice
-- [ ] `NodeFlagEffectSheet`: add/remove flag set-on-enter effects
-- [ ] Visual lock badge on choices that have unmet requirements
+### M4 — Requirement Flags *(complete)*
+- [x] `RequirementFlag` entity + repository interface
+- [x] `requirement_flags` Drift table + DAO (DB migration v3)
+- [x] `RequirementFlagSheet`: add/remove `flagName = true/false` requirements on a choice
+- [x] Visual lock badge on choices that have unmet requirements
 
-### M5 — Playback / Simulation
+### M5 — Reward Flags
+- [ ] `RewardFlag` entity + repository interface
+- [ ] `reward_flags` Drift table + DAO (DB migration v4)
+- [ ] `RewardFlagSheet`: add/remove flag set-on-enter effects on a node
+
+### M6 — Playback / Simulation
 - [ ] `PlaybackState` (in-memory: currentNodeId, visitedNodes, flagMap)
 - [ ] `PlaybackNotifier` (`Notifier`, no DB)
 - [ ] `PlaybackScreen`: current node card, choices list (locked choices dimmed), Back / Restart
 - [ ] "Play from start" FAB on `DialogueEditorScreen`
 - [ ] Dead-end screen (leaf node) with restart prompt
 
-### M6 — Export & Polish
+### M7 — Export & Polish
 - [ ] JSON export (NPC graph → `.gamestory.json`) via `share_plus`
 - [ ] JSON import (restore from file)
 - [ ] Animations: node add/delete, NPC card appear

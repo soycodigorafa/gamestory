@@ -6,10 +6,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../data/repositories/drift_dialogue_choice_repository.dart';
 import '../../../data/repositories/drift_dialogue_node_repository.dart';
+import '../../../data/repositories/drift_requirement_flag_repository.dart';
 import '../../../domain/entities/dialogue_choice.dart';
 import '../../../domain/entities/dialogue_node.dart';
+import '../../../domain/entities/requirement_flag.dart';
 import '../../../domain/repositories/dialogue_choice_repository.dart';
 import '../../../domain/repositories/dialogue_node_repository.dart';
+import '../../../domain/repositories/requirement_flag_repository.dart';
 import '../../canvas/providers/npc_list_provider.dart';
 
 part 'dialogue_graph_provider.g.dart';
@@ -30,6 +33,18 @@ DialogueNodeRepository dialogueNodeRepository(DialogueNodeRepositoryRef ref) {
 DialogueChoiceRepository dialogueChoiceRepository(
     DialogueChoiceRepositoryRef ref) {
   return DriftDialogueChoiceRepository(ref.watch(appDatabaseProvider));
+}
+
+@Riverpod(keepAlive: true)
+RequirementFlagRepository requirementFlagRepository(
+    RequirementFlagRepositoryRef ref) {
+  return DriftRequirementFlagRepository(ref.watch(appDatabaseProvider));
+}
+
+@riverpod
+Stream<List<RequirementFlag>> requirementFlagsByChoice(
+    RequirementFlagsByChoiceRef ref, String choiceId) {
+  return ref.watch(requirementFlagRepositoryProvider).watchByChoice(choiceId);
 }
 
 @riverpod
@@ -89,11 +104,13 @@ class DialogueGraph extends _$DialogueGraph {
   Future<void> deleteNode(String nodeId) async {
     final graph = await future;
     final choiceRepo = ref.read(dialogueChoiceRepositoryProvider);
+    final flagRepo = ref.read(requirementFlagRepositoryProvider);
 
     for (final c in graph.choices.where((c) => c.toNodeId == nodeId)) {
       await choiceRepo.update(UpdateChoiceInput(id: c.id, clearToNodeId: true));
     }
     for (final c in graph.choices.where((c) => c.fromNodeId == nodeId)) {
+      await flagRepo.deleteByChoiceId(c.id);
       await choiceRepo.delete(c.id);
     }
     await ref.read(dialogueNodeRepositoryProvider).delete(nodeId);
