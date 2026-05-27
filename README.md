@@ -1,6 +1,6 @@
 # GameStory
 
-> A cross-platform narrative authoring tool for game developers — structure dialogue trees, define item unlocks, set conversation requirements, and track milestone completeness, all from a single offline-first app.
+> A cross-platform NPC dialogue flow editor — create NPCs, build branching conversation graphs with boolean flag conditions, simulate dialogue paths, and export to JSON, all offline-first.
 
 ---
 
@@ -12,32 +12,31 @@
 4. [Architecture](#architecture)
 5. [State Management](#state-management)
 6. [Data Layer](#data-layer)
-7. [Cloud Sync](#cloud-sync)
-8. [Milestone System](#milestone-system)
-9. [Export](#export)
-10. [Design Language](#design-language)
-11. [Project Structure](#project-structure)
-12. [Getting Started](#getting-started)
-13. [Roadmap](#roadmap)
-14. [Contributing](#contributing)
+7. [Design Language](#design-language)
+8. [Project Structure](#project-structure)
+9. [Getting Started](#getting-started)
+10. [Roadmap](#roadmap)
+11. [Contributing](#contributing)
 
 ---
 
 ## Overview
 
-GameStory helps narrative designers and game developers author branching dialogue systems without leaving their devices. Projects contain dialogue trees organised as hierarchical node lists. Each node can carry speaker metadata, response branches, item unlock effects, and prerequisite conditions. A built-in milestone system surfaces how much of the project's unlock logic has been defined, giving the team a concrete sense of progress at every stage.
+GameStory is an offline-first tool for narrative designers and game developers to author NPC dialogue flows. You create NPCs on a free-form pan/zoom canvas, then open each NPC to build a branching conversation graph — nodes connected by player choices, with boolean flag requirements to gate paths and flag effects triggered on entering a node. A built-in simulation mode lets you walk any dialogue tree and see locked/unlocked paths in real time.
 
 ---
 
 ## Key Features
 
-- **Dialogue tree editor** — hierarchical outline view with nested nodes; create, reorder, and link branches
-- **Item unlocks** — attach items that become available when a dialogue node is reached
-- **Condition requirements** — gate nodes behind inventory checks, flags, or stat comparisons
-- **Milestone tracking** — completion percentage driven by how many items/conditions have fully-defined requirements
-- **JSON export** — export any project as a portable JSON file consumable by any game engine
-- **Offline-first** — all data lives locally; the app works with no internet connection
-- **Optional cloud backup** *(future)* — sync projects across devices via a pluggable cloud backend
+- **NPC canvas** — pan/zoom workspace showing all NPCs as draggable cards; long-press for edit/delete
+- **Visual node editor** — structured flow of dialogue nodes connected by arrows; toggle vertical/horizontal layout
+- **Long-press context actions** — hold any NPC card or dialogue node to get Edit / Delete (and Set as Start) options
+- **Boolean flag conditions** — gate player choices behind named flags (`flag_name = true/false`)
+- **Flag effects** — set flag values when a node is entered, enabling progression logic
+- **Playback / simulation** — in-memory dialogue walk-through; locked choices are dimmed with a lock indicator
+- **Dark / light theme** — Material 3, dark by default, switchable with a single tap in the app bar
+- **JSON export** — export any NPC's dialogue graph as a portable `.gamestory.json` file
+- **Offline-first** — all data persisted locally with Drift (SQLite); no account required
 
 ---
 
@@ -61,18 +60,19 @@ GameStory follows **MVVM** — each screen has a dedicated ViewModel implemented
 ```
 View (ConsumerWidget)
   ↕  watches / calls
-ViewModel (Riverpod Notifier)
+ViewModel (Riverpod AsyncNotifier)
   ↕  uses
-Repository (abstract interface)
+Repository (abstract interface — domain layer)
   ↕  implemented by
-DataSource (Drift DAO  |  CloudService stub)
+DriftRepository (data layer — Drift DAO)
 ```
 
 **Layer rules:**
-- Views may only import from `presentation/`.
-- ViewModels may only import from `domain/` (entities, repository interfaces).
-- Repositories in `data/` implement domain interfaces and are injected via Riverpod providers.
-- Nothing in `domain/` depends on Flutter or any external package.
+- `lib/features/.../view/` and `widgets/` → may only import from `lib/shared/`, `lib/domain/`, and sibling `providers/`.
+- `lib/features/.../providers/` → may only import from `lib/domain/`.
+- `lib/data/` → may import from `lib/domain/` and Drift/external packages.
+- `lib/domain/` → pure Dart only; zero Flutter or package imports.
+- Never pass `WidgetRef` outside the widget layer.
 
 ---
 
@@ -83,14 +83,14 @@ DataSource (Drift DAO  |  CloudService stub)
 | Pattern | When to use |
 |---|---|
 | `@riverpod` (`Provider`) | Stateless, derived, or async-loaded values |
-| `@riverpod` (`Notifier`) | Mutable synchronous state (e.g. selected node, UI filters) |
-| `@riverpod` (`AsyncNotifier`) | Mutable state loaded from DB or network |
+| `@riverpod` (`Notifier`) | Mutable synchronous state (theme mode, layout direction, playback) |
+| `@riverpod` (`AsyncNotifier`) | DB-backed mutable state (NPCs, nodes, choices, flags) |
 
 **Conventions:**
-- One provider file per feature, co-located in `feature/<name>/providers/`.
-- Provider names use the `<noun>Provider` suffix (e.g. `dialogueTreeProvider`).
-- Never pass `WidgetRef` outside of widget layer — pass data or callbacks instead.
-- `riverpod_lint` rules are enforced via `analysis_options.yaml`.
+- One provider file per feature at `lib/features/<name>/providers/<name>_provider.dart`.
+- Provider names use the `<noun>Provider` suffix (e.g. `npcListProvider`, `dialogueGraphProvider`).
+- `themeModeProvider` persists `ThemeMode` via `shared_preferences`; dark by default.
+- Never pass `WidgetRef` outside the widget layer.
 
 ---
 
@@ -98,159 +98,82 @@ DataSource (Drift DAO  |  CloudService stub)
 
 **Package:** `drift` (SQLite ORM, all platforms)
 
-### Schema overview
+### Schema
 
 ```
-projects
-  id, name, description, createdAt, updatedAt
+npcs
+  id, name, description, canvasX, canvasY, colorHex, createdAt, updatedAt
 
 dialogue_nodes
-  id, projectId, parentId, speakerName, dialogueText, sortOrder
+  id, npcId, speakerName, dialogueText, isStart, layoutX, layoutY
 
-items
-  id, projectId, name, description
+dialogue_choices
+  id, fromNodeId, toNodeId, choiceText, sortOrder
 
-conditions
-  id, projectId, expression, conditionType (flag | inventory | stat)
+choice_flags                         -- gate a choice behind a flag value
+  choiceId, flagName, requiredValue (bool)
 
-node_item_unlocks
-  nodeId, itemId
-
-node_conditions
-  nodeId, conditionId, requirementType (requires | blocks)
-
-milestones
-  id, projectId, label, targetCount, completedAt
+node_flag_effects                    -- set a flag when a node is entered
+  nodeId, flagName, setValue (bool)
 ```
 
 ### Local-first strategy
 
-- Drift database file lives in the app's documents directory on every platform.
-- All writes go to Drift first; cloud sync (when enabled) treats Drift as the source of truth.
-- Repositories expose `Stream`-based APIs so the UI reactively updates on any DB change.
-- Migrations are versioned in `data/database/migrations/`.
+- Drift database lives in the app's documents directory on every platform.
+- Repositories expose `Stream`-based APIs so the UI reactively updates on any DB write.
+- Schema migrations are versioned: v1 (npcs) → v2 (nodes + choices) → v3 (flags).
 
 ### Repository interfaces (domain layer)
 
 ```dart
-abstract interface class ProjectRepository {
-  Stream<List<Project>> watchAll();
-  Future<Project> create(CreateProjectInput input);
-  Future<void> update(Project project);
+abstract interface class NpcRepository {
+  Stream<List<Npc>> watchAll();
+  Future<Npc> create(CreateNpcInput input);
+  Future<void> update(UpdateNpcInput input);
   Future<void> delete(String id);
 }
 
 abstract interface class DialogueNodeRepository {
-  Stream<List<DialogueNode>> watchByProject(String projectId);
+  Stream<List<DialogueNode>> watchByNpc(String npcId);
   Future<DialogueNode> create(CreateNodeInput input);
-  Future<void> move(String nodeId, {String? newParentId, int newSortOrder});
+  Future<void> update(UpdateNodeInput input);
+  Future<void> setStart(String nodeId);
+  Future<void> delete(String id);
+}
+
+abstract interface class DialogueChoiceRepository {
+  Stream<List<DialogueChoice>> watchByNode(String fromNodeId);
+  Future<DialogueChoice> create(CreateChoiceInput input);
+  Future<void> update(UpdateChoiceInput input);
   Future<void> delete(String id);
 }
 ```
 
-All other repositories follow the same `watch / create / update / delete` pattern.
-
----
-
-## Cloud Sync
-
-Cloud backup is **deferred to Milestone 3**. The domain interface (`CloudSyncService`) is defined in MVP so that the data layer is not coupled to any backend.
-
-```dart
-abstract interface class CloudSyncService {
-  Future<void> push(String projectId);
-  Future<void> pull(String projectId);
-  Stream<SyncStatus> watchStatus(String projectId);
-}
-```
-
-The MVP ships a `NoOpCloudSyncService` implementation. Backend candidates for Milestone 3: **Firebase**, **Supabase**, or **Appwrite**.
-
----
-
-## Milestone System
-
-A milestone measures how complete a project's **unlock logic** is. Completeness is defined as:
-
-> **% of dialogue nodes that have at least one fully-configured item unlock or condition requirement.**
-
-### Rules
-
-- A node is considered *complete* when it has ≥ 1 `node_item_unlock` **or** ≥ 1 `node_condition` with a valid, non-empty `expression`.
-- A project's milestone progress = `completeNodes / totalNodes * 100`.
-- Milestones are discrete thresholds defined per project (e.g. 25 %, 50 %, 75 %, 100 %).
-- When a threshold is crossed, `milestones.completedAt` is stamped and a completion animation fires.
-- Projects with zero nodes always show 0 % progress.
-
-### UX
-
-- A persistent progress bar is visible on the project detail screen.
-- Completed milestones are listed with timestamp badges under a "Achievements" section.
-- Unlocking all milestones marks the project as **Narrative Complete**.
-
----
-
-## Export
-
-### MVP — JSON
-
-Menu: *Project → Export → JSON*
-
-Produces a single `.gamestory.json` file containing the full project graph:
-
-```jsonc
-{
-  "version": "1.0",
-  "project": {
-    "id": "...",
-    "name": "My Game",
-    "exportedAt": "2025-01-01T00:00:00Z"
-  },
-  "nodes": [
-    {
-      "id": "...",
-      "parentId": null,
-      "speaker": "NPC_Blacksmith",
-      "text": "Welcome, traveller.",
-      "sortOrder": 0,
-      "unlocks": ["item_sword"],
-      "requires": [{ "type": "flag", "expression": "quest_started == true" }]
-    }
-  ],
-  "items": [{ "id": "item_sword", "name": "Iron Sword" }],
-  "conditions": [{ "id": "...", "type": "flag", "expression": "quest_started == true" }]
-}
-```
-
-### Future formats *(Milestone 2+)*
-
-- **Ink** (`.ink`) — for Unity + Inkle workflows
-- **Yarn Spinner** (`.yarn`) — for Unity + Godot workflows
-- **CSV** — dialogue text rows for localization pipelines
+All flag repositories follow the same `watch / create / delete` pattern.
 
 ---
 
 ## Design Language
 
-GameStory uses a **dark, game-dev-aesthetic** custom theme built on top of Material 3 `ThemeData`.
+GameStory uses **Material 3** with a dark/light switchable theme. Dark mode is default.
 
-| Token | Value |
-|---|---|
-| Background | `#0E0E12` |
-| Surface | `#1A1A22` |
-| Surface variant | `#24242F` |
-| Primary accent | `#7B61FF` (electric violet) |
-| Secondary accent | `#00D9C0` (teal) |
-| Error | `#FF4D6D` |
-| On-surface text | `#E8E8F0` |
-| Muted text | `#6B6B80` |
-| Font | `JetBrains Mono` (code feel) + `Inter` (body) |
+| Token (AppColors) | Dark value | Light value |
+|---|---|---|
+| `background` | `#0E0E12` | `#F5F5FA` |
+| `surface` | `#1A1A22` | `#FFFFFF` |
+| `surfaceVariant` | `#24242F` | `#EBEBF5` |
+| `primary` | `#7B61FF` | `#5B3FE0` |
+| `secondary` | `#00D9C0` | `#00A896` |
+| `error` | `#FF4D6D` | `#D32F4F` |
+| `onSurface` | `#E8E8F0` | `#1A1A22` |
+| `muted` | `#6B6B80` | `#888899` |
 
 **Component conventions:**
-- All cards use `BorderRadius.circular(12)` and a `1 px` border in `surfaceVariant`.
-- Interactive surfaces add `0.05` opacity white overlay on hover (desktop) and `InkWell` splash on mobile.
-- Icons: `phosphor_flutter` package (consistent outline style).
-- No platform-adaptive widgets in MVP — a single cross-platform dark theme everywhere.
+- Cards: `BorderRadius.circular(12)` + 1 px border in `surfaceVariant`.
+- Interactive surfaces: `InkWell` with theme splash color.
+- Icons: `phosphor_flutter` package (outline style).
+- Fonts: `Inter` for body text, `JetBrains Mono` for dialogue text content.
+- Long-press → `showMenu` context popup (no custom bottom sheet needed).
 
 ---
 
@@ -258,50 +181,42 @@ GameStory uses a **dark, game-dev-aesthetic** custom theme built on top of Mater
 
 ```
 lib/
-├── main.dart                    # App entry point, ProviderScope
+├── main.dart                          # ProviderScope → MaterialApp.router
 ├── app/
-│   ├── app.dart                 # MaterialApp.router setup
-│   ├── router.dart              # go_router route definitions
+│   ├── app.dart                       # MaterialApp.router, theme wiring
+│   ├── router.dart                    # go_router: /, /npc/:id, /npc/:id/play
 │   └── theme/
-│       ├── app_theme.dart       # ThemeData factory
-│       └── app_colors.dart      # Color token constants
+│       ├── app_theme.dart             # ThemeData factory (dark + light)
+│       └── app_colors.dart            # Color token constants
 ├── domain/
-│   ├── entities/                # Pure Dart models (Project, DialogueNode, Item, Condition, Milestone)
-│   └── repositories/           # Abstract repository interfaces
+│   ├── entities/                      # Npc, DialogueNode, DialogueChoice, ChoiceFlag, NodeFlagEffect
+│   └── repositories/                  # Abstract interfaces
 ├── data/
 │   ├── database/
-│   │   ├── app_database.dart    # Drift database class
-│   │   ├── tables/              # Drift table definitions
-│   │   ├── daos/                # Data Access Objects
-│   │   └── migrations/          # Versioned schema migrations
-│   ├── repositories/            # Drift implementations of domain repositories
-│   └── sync/
-│       └── no_op_cloud_sync.dart
+│   │   ├── app_database.dart          # Drift AppDatabase (versioned migrations)
+│   │   ├── tables/                    # Drift table definitions
+│   │   ├── daos/                      # Data Access Objects
+│   │   └── migrations/               # Versioned migration steps
+│   └── repositories/                  # DriftNpcRepository, DriftDialogueNodeRepository, etc.
 ├── features/
-│   ├── projects/
+│   ├── canvas/                        # NPC canvas screen
+│   │   ├── providers/
+│   │   ├── view/
+│   │   └── widgets/                   # NpcCard (draggable, long-press menu)
+│   ├── dialogue_editor/               # Node flow editor per NPC
+│   │   ├── providers/
+│   │   ├── view/
+│   │   └── widgets/                   # NodeCard, ChoiceRow, connection painter
+│   ├── playback/                      # In-memory dialogue simulation
 │   │   ├── providers/
 │   │   ├── view/
 │   │   └── widgets/
-│   ├── dialogue_tree/
-│   │   ├── providers/
-│   │   ├── view/
-│   │   └── widgets/
-│   ├── items/
-│   │   ├── providers/
-│   │   ├── view/
-│   │   └── widgets/
-│   ├── conditions/
-│   │   ├── providers/
-│   │   ├── view/
-│   │   └── widgets/
-│   └── milestones/
-│       ├── providers/
-│       ├── view/
-│       └── widgets/
+│   └── settings/                      # Theme toggle, about
+│       ├── providers/                 # themeModeProvider
+│       └── view/
 └── shared/
-    ├── widgets/                 # Reusable UI components
-    ├── extensions/              # Dart extension methods
-    └── utils/                   # Formatters, validators, helpers
+    ├── widgets/                       # GsButton, GsCard, GsTextField, GsDialog, GsEmptyState
+    └── utils/                         # Formatters, validators, helpers
 ```
 
 ---
@@ -346,7 +261,7 @@ flutter run -d windows
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-Run this after any change to Drift table definitions or Riverpod `@riverpod` annotations.
+Run this after any change to Drift table definitions or `@riverpod` annotations.
 
 ### Tests
 
@@ -358,73 +273,55 @@ flutter test
 
 ## Roadmap
 
-### Milestone 1 — Component Library
-Build every reusable UI primitive in isolation. The app must be runnable as a living catalogue (similar to Widgetbook) so each component can be inspected on all platforms before any real screen is composed.
+### M1 — Foundation *(in progress)*
+Get the app running with theme infrastructure and shared widgets.
 
-- [ ] Dark theme setup (`AppTheme`, `AppColors`, typography tokens)
-- [ ] `GsButton` — primary, secondary, ghost, destructive variants
-- [ ] `GsTextField` — single-line, multiline, with label + error state
-- [ ] `GsCard` — surface card with optional border and slot for actions
-- [ ] `GsTreeNode` — expandable/collapsible outline row with indent level
-- [ ] `GsBadge` — status chip (complete, incomplete, locked)
-- [ ] `GsProgressBar` — labelled progress with milestone tick marks
-- [ ] `GsEmptyState` — illustration + message + optional CTA
-- [ ] `GsBottomSheet` — modal sheet wrapper
-- [ ] `GsDialog` — confirmation + input dialog variants
-- [ ] `GsIconButton` — icon-only action button
-- [ ] Component catalogue screen (runs in debug/dev mode, lists every component with all its variants)
+- [ ] `AppTheme` + `AppColors` (Material 3 dark + light `ColorScheme.fromSeed`)
+- [ ] `themeModeProvider` (`Notifier<ThemeMode>`, default dark, persisted via `shared_preferences`)
+- [ ] `app.dart` + `router.dart` (3 named routes, placeholder screens)
+- [ ] `main.dart` wired (`ProviderScope` → `MaterialApp.router`)
+- [ ] Theme toggle button in app bar (sun ↔ moon icon)
+- [ ] Shared widgets: `GsButton`, `GsCard`, `GsTextField`, `GsDialog`, `GsEmptyState`
 
-### Milestone 2 — Composed Views & Navigation
-Wire components together into full screens and set up routing. No real data — all views driven by hardcoded stubs or in-memory state. Goal: navigate the entire app end-to-end.
+### M2 — NPC Canvas
+- [ ] `Npc` entity + `NpcRepository` interface
+- [ ] `npcs` Drift table + DAO + `DriftNpcRepository` + `AppDatabase` v1
+- [ ] `npcListProvider` (`AsyncNotifier`)
+- [ ] `NpcCanvasScreen`: `InteractiveViewer` + `Stack` of draggable `NpcCard` widgets
+- [ ] Long-press `NpcCard` → context menu (Edit, Delete)
+- [ ] Create / rename / delete NPC flows
 
-- [x] `go_router` route map (all named routes defined)
-- [x] Projects list screen (stub data)
-- [x] Project detail screen — tabs: Tree / Items / Conditions / Milestones (stub data)
-- [x] Dialogue tree screen — hierarchical `GsTreeNode` list (stub data)
-- [x] Node detail bottom sheet — speaker, text, unlocks, conditions
-- [x] Items screen — list + add/edit/delete sheet (stub data)
-- [x] Conditions screen — list + expression editor (stub data)
-- [x] Milestones screen — progress bar + achievement badges (stub data)
-- [x] Responsive layout shell — bottom nav (mobile) / rail (tablet) / side drawer (desktop)
-- [x] Smooth transitions and screen-level error/empty states
+### M3 — Dialogue Node Editor
+- [ ] `DialogueNode`, `DialogueChoice` entities + repository interfaces
+- [ ] Drift tables + DAOs + `DriftDialogueNodeRepository` (DB migration v2)
+- [ ] `dialogueGraphProvider` (`AsyncNotifier`)
+- [ ] `DialogueEditorScreen`: scrollable node flow + `CustomPaint` arrows
+- [ ] Vertical / Horizontal layout toggle (state in provider)
+- [ ] Long-press node → context menu (Edit, Set as Start, Delete)
+- [ ] `NodeEditSheet`: speaker, text, manage outgoing choices
+- [ ] Node picker modal to connect choices to target nodes
 
-### Milestone 3 — Dialogue Play Mode
-Add an interactive playback/preview mode that lets authors simulate a dialogue tree end-to-end using stub data. No real DB — all state is in-memory.
+### M4 — Flag Requirements & Effects
+- [ ] `ChoiceFlag`, `NodeFlagEffect` entities + repository interfaces
+- [ ] Drift tables + DAOs (DB migration v3)
+- [ ] `ChoiceFlagSheet`: add/remove `flagName = true/false` requirements on a choice
+- [ ] `NodeFlagEffectSheet`: add/remove flag set-on-enter effects
+- [ ] Visual lock badge on choices that have unmet requirements
 
-- [x] "Play" entry point on Project detail screen (plays from root node) and on any individual node in the tree (plays from that node)
-- [x] Playback screen — shows current speaker + dialogue text, lists child branches as tappable choices
-- [x] In-memory playback state — tracks current node, visited nodes, simulated triggered item unlocks and evaluated conditions (no real DB)
-- [x] "Restart" and "Back" controls; dead-end screen when a leaf node is reached
-- [x] Visual indicator for nodes that would be gated (condition not met) using stub flag values
+### M5 — Playback / Simulation
+- [ ] `PlaybackState` (in-memory: currentNodeId, visitedNodes, flagMap)
+- [ ] `PlaybackNotifier` (`Notifier`, no DB)
+- [ ] `PlaybackScreen`: current node card, choices list (locked choices dimmed), Back / Restart
+- [ ] "Play from start" FAB on `DialogueEditorScreen`
+- [ ] Dead-end screen (leaf node) with restart prompt
 
-### Milestone 4 — Data Layer & Business Logic
-Replace all stub data with real persistence. Implement the full Drift schema, repositories, and Riverpod ViewModels.
-
-- [ ] Drift database setup (`AppDatabase`, all 7 tables, migration v1)
-- [ ] DAOs for all tables
-- [ ] Drift implementations of all repository interfaces
-- [ ] Riverpod providers wiring ViewModels to repositories
-- [ ] Project CRUD connected to UI
-- [ ] Dialogue tree CRUD + node reordering connected to UI
-- [ ] Item CRUD connected to UI
-- [ ] Condition CRUD + expression validation connected to UI
-- [ ] Node ↔ item unlock linking connected to UI
-- [ ] Node ↔ condition requirement linking connected to UI
-- [ ] `NoOpCloudSyncService` wired into provider graph
-
-### Milestone 5 — Progress & Export
-- [ ] Milestone/achievement system with live progress tracking
-- [ ] Completion animation on milestone unlock
-- [ ] JSON export (full project → `.gamestory.json`)
-- [ ] JSON import (restore a project from file)
-- [ ] Responsive layout polish (phone vs tablet vs desktop breakpoints)
-
-### Milestone 6 — Cloud & Extended Formats
-- [ ] Cloud sync backend integration (Firebase / Supabase / Appwrite — TBD)
-- [ ] Cross-device project sync
-- [ ] Ink export (`.ink`)
-- [ ] Yarn Spinner export (`.yarn`)
-- [ ] CSV export for localization pipelines
+### M6 — Export & Polish
+- [ ] JSON export (NPC graph → `.gamestory.json`) via `share_plus`
+- [ ] JSON import (restore from file)
+- [ ] Animations: node add/delete, NPC card appear
+- [ ] Responsive polish: bottom nav (phone) / side rail (tablet) / drawer (desktop)
+- [ ] Ink (`.ink`) export *(stretch)*
+- [ ] Yarn Spinner (`.yarn`) export *(stretch)*
 
 ---
 
@@ -433,17 +330,17 @@ Replace all stub data with real persistence. Implement the full Drift schema, re
 ### Branching
 
 ```
-main          → stable, tagged releases
-develop       → integration branch
+main           → stable, tagged releases
+develop        → integration branch
 feature/<name> → individual features
-fix/<name>    → bug fixes
+fix/<name>     → bug fixes
 ```
 
 ### PR Rules
 
 1. All PRs target `develop`, never `main`.
-2. Run `flutter analyze` and `flutter test` before opening a PR — no warnings allowed.
-3. Run `dart run build_runner build` if any generated files changed.
+2. Run `flutter analyze` (zero warnings) and `flutter test` before opening.
+3. Run `dart run build_runner build` if generated files changed.
 4. Each PR must include or update relevant unit/widget tests.
 5. Keep PRs focused — one feature or fix per PR.
 
