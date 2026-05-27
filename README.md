@@ -292,14 +292,14 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] Create / rename / delete NPC flows
 
 ### M3 — Dialogue Node Editor
-- [ ] `DialogueNode`, `DialogueChoice` entities + repository interfaces
-- [ ] Drift tables + DAOs + `DriftDialogueNodeRepository` (DB migration v2)
-- [ ] `dialogueGraphProvider` (`AsyncNotifier`)
-- [ ] `DialogueEditorScreen`: scrollable node flow + `CustomPaint` arrows
-- [ ] Vertical / Horizontal layout toggle (state in provider)
-- [ ] Long-press node → context menu (Edit, Set as Start, Delete)
-- [ ] `NodeEditSheet`: speaker, text, manage outgoing choices
-- [ ] Node picker modal to connect choices to target nodes
+- [x] `DialogueNode`, `DialogueChoice` entities + repository interfaces
+- [x] Drift tables + DAOs + `DriftDialogueNodeRepository` (DB migration v2)
+- [x] `dialogueGraphProvider` (`AsyncNotifier`)
+- [x] `DialogueEditorScreen`: scrollable node flow + `CustomPaint` arrows
+- [x] Vertical / Horizontal layout toggle (state in provider)
+- [x] Long-press node → context menu (Edit, Set as Start, Delete)
+- [x] `NodeEditSheet`: speaker, text, manage outgoing choices
+- [x] Node picker modal to connect choices to target nodes
 
 ### M4 — Flag Requirements & Effects
 - [ ] `ChoiceFlag`, `NodeFlagEffect` entities + repository interfaces
