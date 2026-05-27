@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/npc.dart';
+import '../../../features/export/providers/import_provider.dart';
 import '../../../features/settings/providers/theme_mode_provider.dart';
 import '../../../shared/widgets/gs_dialog.dart';
 import '../../../shared/widgets/gs_empty_state.dart';
@@ -30,6 +31,11 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
       appBar: AppBar(
         title: const Text('GameStory'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.upload_file_outlined),
+            tooltip: 'Import NPC from JSON',
+            onPressed: () => _importNpc(context),
+          ),
           IconButton(
             icon: Icon(
                 isDark ? Icons.wb_sunny_outlined : Icons.nightlight_round),
@@ -153,6 +159,30 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
           .renameNpc(npc.id, controller.text.trim());
     }
     controller.dispose();
+  }
+
+  Future<void> _importNpc(BuildContext context) async {
+    final result =
+        await ref.read(importProvider.notifier).importFromFile();
+    if (!context.mounted) return;
+    if (result != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'Imported "${result.npc.name}" (${result.nodeCount} nodes)'),
+        ),
+      );
+    } else {
+      final importState = ref.read(importProvider);
+      if (importState.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Import failed: ${importState.error}'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _confirmDelete(BuildContext context, Npc npc) async {

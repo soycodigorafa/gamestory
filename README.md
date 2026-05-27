@@ -35,7 +35,8 @@ GameStory is an offline-first tool for narrative designers and game developers t
 - **Reward flags** — set flag values when a node is entered, enabling progression logic
 - **Playback / simulation** — in-memory dialogue walk-through; locked choices are dimmed with a lock indicator
 - **Dark / light theme** — Material 3, dark by default, switchable with a single tap in the app bar
-- **JSON export** — export any NPC's dialogue graph as a portable `.gamestory.json` file
+- **JSON export / import** — export any NPC's dialogue graph as a portable `.gamestory.json` file; import to restore it on any device
+- **CSV export** — export dialogue graph as a flat `.csv` for spreadsheet review
 - **Offline-first** — all data persisted locally with Drift (SQLite); no account required
 
 ---
@@ -320,13 +321,23 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] Dead-end screen (leaf node) with restart prompt
 - [x] Flag debug panel (collapsible bottom panel, shows live flagMap)
 
-### M7 — Export & Polish
-- [ ] JSON export (NPC graph → `.gamestory.json`) via `share_plus`
-- [ ] JSON import (restore from file)
-- [ ] Animations: node add/delete, NPC card appear
-- [ ] Responsive polish: bottom nav (phone) / side rail (tablet) / drawer (desktop)
-- [ ] Ink (`.ink`) export *(stretch)*
-- [ ] Yarn Spinner (`.yarn`) export *(stretch)*
+### M7 — Export & Import *(complete)*
+- [x] JSON export (NPC graph → `.gamestory.json`) via `share_plus`
+- [x] CSV export (dialogue graph → flat `.csv`) via `share_plus`
+- [x] JSON import (restore NPC graph from `.gamestory.json`)
+
+### M8 — Animations
+- [ ] Node add / delete entrance & exit animations
+- [ ] NPC card appear animation on canvas
+
+### M9 — Responsive Polish
+- [ ] Bottom navigation bar (phone)
+- [ ] Side navigation rail (tablet)
+- [ ] Navigation drawer (desktop)
+
+### M10 — Other Formats *(stretch)*
+- [ ] Ink (`.ink`) export
+- [ ] Yarn Spinner (`.yarn`) export
 
 ---
 
