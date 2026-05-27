@@ -273,15 +273,15 @@ flutter test
 
 ## Roadmap
 
-### M1 — Foundation *(in progress)*
+### M1 — Foundation *(complete)*
 Get the app running with theme infrastructure and shared widgets.
 
-- [ ] `AppTheme` + `AppColors` (Material 3 dark + light `ColorScheme.fromSeed`)
-- [ ] `themeModeProvider` (`Notifier<ThemeMode>`, default dark, persisted via `shared_preferences`)
-- [ ] `app.dart` + `router.dart` (3 named routes, placeholder screens)
-- [ ] `main.dart` wired (`ProviderScope` → `MaterialApp.router`)
-- [ ] Theme toggle button in app bar (sun ↔ moon icon)
-- [ ] Shared widgets: `GsButton`, `GsCard`, `GsTextField`, `GsDialog`, `GsEmptyState`
+- [x] `AppTheme` + `AppColors` (Material 3 dark + light `ColorScheme.fromSeed`)
+- [x] `themeModeProvider` (`Notifier<ThemeMode>`, default dark, persisted via `shared_preferences`)
+- [x] `app.dart` + `router.dart` (3 named routes, placeholder screens)
+- [x] `main.dart` wired (`ProviderScope` → `MaterialApp.router`)
+- [x] Theme toggle button in app bar (sun ↔ moon icon)
+- [x] Shared widgets: `GsButton`, `GsCard`, `GsTextField`, `GsDialog`, `GsEmptyState`
 
 ### M2 — NPC Canvas
 - [ ] `Npc` entity + `NpcRepository` interface
