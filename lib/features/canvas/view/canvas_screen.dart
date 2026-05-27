@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../domain/entities/npc.dart';
 import '../../../features/export/providers/import_provider.dart';
 import '../../../features/settings/providers/theme_mode_provider.dart';
+import '../../../shared/widgets/gs_animated_card.dart';
 import '../../../shared/widgets/gs_dialog.dart';
 import '../../../shared/widgets/gs_empty_state.dart';
 import '../../../shared/widgets/gs_text_field.dart';
@@ -89,27 +90,30 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
             return Positioned(
               left: pos.dx,
               top: pos.dy,
-              child: NpcCard(
-                name: npc.name,
-                colorHex: npc.colorHex,
-                onDragUpdate: (d) =>
-                    setState(() => _localOffsets[npc.id] =
-                        (_localOffsets[npc.id] ?? Offset.zero) + d),
-                onDragEnd: () {
-                  final total = _localOffsets[npc.id] ?? Offset.zero;
-                  final newX = npc.canvasX + total.dx;
-                  final newY = npc.canvasY + total.dy;
-                  ref
-                      .read(npcListProvider.notifier)
-                      .moveNpc(npc.id, newX, newY);
-                  setState(() => _localOffsets.remove(npc.id));
-                },
-                onTap: () => context.goNamed(
-                  'dialogue-editor',
-                  pathParameters: {'id': npc.id},
+              child: GsAnimatedCard(
+                key: ValueKey(npc.id),
+                child: NpcCard(
+                  name: npc.name,
+                  colorHex: npc.colorHex,
+                  onDragUpdate: (d) =>
+                      setState(() => _localOffsets[npc.id] =
+                          (_localOffsets[npc.id] ?? Offset.zero) + d),
+                  onDragEnd: () {
+                    final total = _localOffsets[npc.id] ?? Offset.zero;
+                    final newX = npc.canvasX + total.dx;
+                    final newY = npc.canvasY + total.dy;
+                    ref
+                        .read(npcListProvider.notifier)
+                        .moveNpc(npc.id, newX, newY);
+                    setState(() => _localOffsets.remove(npc.id));
+                  },
+                  onTap: () => context.goNamed(
+                    'dialogue-editor',
+                    pathParameters: {'id': npc.id},
+                  ),
+                  onEdit: () => _showEditDialog(context, npc),
+                  onDelete: () => _confirmDelete(context, npc),
                 ),
-                onEdit: () => _showEditDialog(context, npc),
-                onDelete: () => _confirmDelete(context, npc),
               ),
             );
           }).toList(),

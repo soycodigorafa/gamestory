@@ -326,9 +326,9 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] CSV export (dialogue graph → flat `.csv`) via `share_plus`
 - [x] JSON import (restore NPC graph from `.gamestory.json`)
 
-### M8 — Animations
-- [ ] Node add / delete entrance & exit animations
-- [ ] NPC card appear animation on canvas
+### M8 — Animations *(complete)*
+- [x] Node add / delete entrance & exit animations
+- [x] NPC card appear animation on canvas
 
 ### M9 — Responsive Polish
 - [ ] Bottom navigation bar (phone)

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../domain/entities/dialogue_node.dart';
 import '../../../features/canvas/providers/npc_list_provider.dart';
 import '../../../features/export/view/export_sheet.dart';
+import '../../../shared/widgets/gs_animated_card.dart';
 import '../../../shared/widgets/gs_dialog.dart';
 import '../../../shared/widgets/gs_empty_state.dart';
 import '../providers/dialogue_graph_provider.dart';
@@ -24,6 +25,9 @@ class DialogueEditorScreen extends ConsumerStatefulWidget {
 
 class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
   final Map<String, Offset> _localOffsets = {};
+  final Set<String> _exitingIds = {};
+
+  static const _animationDuration = Duration(milliseconds: 280);
 
   @override
   Widget build(BuildContext context) {
@@ -158,29 +162,37 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
               return Positioned(
                 left: rect.left,
                 top: rect.top,
-                child: NodeCard(
-                  node: node,
-                  choiceCount: choiceCount,
-                  onDragUpdate: (delta) => setState(() {
-                    _localOffsets[node.id] =
-                        (_localOffsets[node.id] ?? Offset.zero) + delta;
-                  }),
-                  onDragEnd: () {
-                    final total = _localOffsets[node.id] ?? Offset.zero;
-                    ref
-                        .read(dialogueGraphProvider(widget.npcId).notifier)
-                        .moveNode(
-                          node.id,
-                          node.layoutX + total.dx,
-                          node.layoutY + total.dy,
-                        );
-                    setState(() => _localOffsets.remove(node.id));
+                child: GsAnimatedCard(
+                  key: ValueKey(node.id),
+                  isExiting: _exitingIds.contains(node.id),
+                  duration: _animationDuration,
+                  onExitComplete: () {
+                    setState(() => _exitingIds.remove(node.id));
                   },
-                  onEdit: () => _showEditSheet(context, node, graph),
-                  onSetStart: () => ref
-                      .read(dialogueGraphProvider(widget.npcId).notifier)
-                      .setStart(node.id),
-                  onDelete: () => _confirmDelete(context, node),
+                  child: NodeCard(
+                    node: node,
+                    choiceCount: choiceCount,
+                    onDragUpdate: (delta) => setState(() {
+                      _localOffsets[node.id] =
+                          (_localOffsets[node.id] ?? Offset.zero) + delta;
+                    }),
+                    onDragEnd: () {
+                      final total = _localOffsets[node.id] ?? Offset.zero;
+                      ref
+                          .read(dialogueGraphProvider(widget.npcId).notifier)
+                          .moveNode(
+                            node.id,
+                            node.layoutX + total.dx,
+                            node.layoutY + total.dy,
+                          );
+                      setState(() => _localOffsets.remove(node.id));
+                    },
+                    onEdit: () => _showEditSheet(context, node, graph),
+                    onSetStart: () => ref
+                        .read(dialogueGraphProvider(widget.npcId).notifier)
+                        .setStart(node.id),
+                    onDelete: () => _confirmDelete(context, node),
+                  ),
                 ),
               );
             }),
@@ -244,6 +256,9 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
           'Delete $label? Inbound choices will be disconnected.'),
     );
     if (confirmed == true) {
+      setState(() => _exitingIds.add(node.id));
+      await Future<void>.delayed(_animationDuration);
+      if (!mounted) return;
       await ref
           .read(dialogueGraphProvider(widget.npcId).notifier)
           .deleteNode(node.id);
