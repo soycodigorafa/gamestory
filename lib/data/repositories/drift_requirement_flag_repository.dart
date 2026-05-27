@@ -15,6 +15,13 @@ class DriftRequirementFlagRepository implements RequirementFlagRepository {
   RequirementFlagDao get _dao => _db.requirementFlagDao;
 
   @override
+  Future<List<RequirementFlag>> getByChoiceIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+    final rows = await _dao.getByChoiceIds(ids);
+    return rows.map(_rowToEntity).toList();
+  }
+
+  @override
   Stream<List<RequirementFlag>> watchByChoice(String choiceId) {
     return _dao
         .watchByChoice(choiceId)

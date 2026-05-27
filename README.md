@@ -307,17 +307,18 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] `RequirementFlagSheet`: add/remove `flagName = true/false` requirements on a choice
 - [x] Visual lock badge on choices that have unmet requirements
 
-### M5 — Reward Flags
-- [ ] `RewardFlag` entity + repository interface
-- [ ] `reward_flags` Drift table + DAO (DB migration v4)
-- [ ] `RewardFlagSheet`: add/remove flag set-on-enter effects on a node
+### M5 — Reward Flags *(complete)*
+- [x] `RewardFlag` entity + repository interface
+- [x] `reward_flags` Drift table + DAO (DB migration v4)
+- [x] `RewardFlagSheet`: add/remove flag set-on-enter effects on a node
 
-### M6 — Playback / Simulation
-- [ ] `PlaybackState` (in-memory: currentNodeId, visitedNodes, flagMap)
-- [ ] `PlaybackNotifier` (`Notifier`, no DB)
-- [ ] `PlaybackScreen`: current node card, choices list (locked choices dimmed), Back / Restart
-- [ ] "Play from start" FAB on `DialogueEditorScreen`
-- [ ] Dead-end screen (leaf node) with restart prompt
+### M6 — Playback / Simulation *(complete)*
+- [x] `PlaybackState` (in-memory: currentNodeId, visitedNodes, flagMap)
+- [x] `PlaybackNotifier` (`AsyncNotifier`, no DB writes)
+- [x] `PlaybackScreen`: current node card, choices list (locked choices dimmed + lock icon), Back / Restart
+- [x] "Play from start" FAB on `DialogueEditorScreen` (disabled when no nodes)
+- [x] Dead-end screen (leaf node) with restart prompt
+- [x] Flag debug panel (collapsible bottom panel, shows live flagMap)
 
 ### M7 — Export & Polish
 - [ ] JSON export (NPC graph → `.gamestory.json`) via `share_plus`

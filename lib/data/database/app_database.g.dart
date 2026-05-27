@@ -1674,6 +1674,316 @@ class RequirementFlagsTableCompanion
   }
 }
 
+class $RewardFlagsTableTable extends RewardFlagsTable
+    with TableInfo<$RewardFlagsTableTable, RewardFlagsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RewardFlagsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nodeIdMeta = const VerificationMeta('nodeId');
+  @override
+  late final GeneratedColumn<String> nodeId = GeneratedColumn<String>(
+    'node_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _flagNameMeta = const VerificationMeta(
+    'flagName',
+  );
+  @override
+  late final GeneratedColumn<String> flagName = GeneratedColumn<String>(
+    'flag_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _setValueMeta = const VerificationMeta(
+    'setValue',
+  );
+  @override
+  late final GeneratedColumn<bool> setValue = GeneratedColumn<bool>(
+    'set_value',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("set_value" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, nodeId, flagName, setValue];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'reward_flags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RewardFlagsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('node_id')) {
+      context.handle(
+        _nodeIdMeta,
+        nodeId.isAcceptableOrUnknown(data['node_id']!, _nodeIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nodeIdMeta);
+    }
+    if (data.containsKey('flag_name')) {
+      context.handle(
+        _flagNameMeta,
+        flagName.isAcceptableOrUnknown(data['flag_name']!, _flagNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_flagNameMeta);
+    }
+    if (data.containsKey('set_value')) {
+      context.handle(
+        _setValueMeta,
+        setValue.isAcceptableOrUnknown(data['set_value']!, _setValueMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RewardFlagsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RewardFlagsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      nodeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}node_id'],
+      )!,
+      flagName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}flag_name'],
+      )!,
+      setValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}set_value'],
+      )!,
+    );
+  }
+
+  @override
+  $RewardFlagsTableTable createAlias(String alias) {
+    return $RewardFlagsTableTable(attachedDatabase, alias);
+  }
+}
+
+class RewardFlagsTableData extends DataClass
+    implements Insertable<RewardFlagsTableData> {
+  final String id;
+  final String nodeId;
+  final String flagName;
+  final bool setValue;
+  const RewardFlagsTableData({
+    required this.id,
+    required this.nodeId,
+    required this.flagName,
+    required this.setValue,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['node_id'] = Variable<String>(nodeId);
+    map['flag_name'] = Variable<String>(flagName);
+    map['set_value'] = Variable<bool>(setValue);
+    return map;
+  }
+
+  RewardFlagsTableCompanion toCompanion(bool nullToAbsent) {
+    return RewardFlagsTableCompanion(
+      id: Value(id),
+      nodeId: Value(nodeId),
+      flagName: Value(flagName),
+      setValue: Value(setValue),
+    );
+  }
+
+  factory RewardFlagsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RewardFlagsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      nodeId: serializer.fromJson<String>(json['nodeId']),
+      flagName: serializer.fromJson<String>(json['flagName']),
+      setValue: serializer.fromJson<bool>(json['setValue']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'nodeId': serializer.toJson<String>(nodeId),
+      'flagName': serializer.toJson<String>(flagName),
+      'setValue': serializer.toJson<bool>(setValue),
+    };
+  }
+
+  RewardFlagsTableData copyWith({
+    String? id,
+    String? nodeId,
+    String? flagName,
+    bool? setValue,
+  }) => RewardFlagsTableData(
+    id: id ?? this.id,
+    nodeId: nodeId ?? this.nodeId,
+    flagName: flagName ?? this.flagName,
+    setValue: setValue ?? this.setValue,
+  );
+  RewardFlagsTableData copyWithCompanion(RewardFlagsTableCompanion data) {
+    return RewardFlagsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      nodeId: data.nodeId.present ? data.nodeId.value : this.nodeId,
+      flagName: data.flagName.present ? data.flagName.value : this.flagName,
+      setValue: data.setValue.present ? data.setValue.value : this.setValue,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RewardFlagsTableData(')
+          ..write('id: $id, ')
+          ..write('nodeId: $nodeId, ')
+          ..write('flagName: $flagName, ')
+          ..write('setValue: $setValue')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, nodeId, flagName, setValue);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RewardFlagsTableData &&
+          other.id == this.id &&
+          other.nodeId == this.nodeId &&
+          other.flagName == this.flagName &&
+          other.setValue == this.setValue);
+}
+
+class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
+  final Value<String> id;
+  final Value<String> nodeId;
+  final Value<String> flagName;
+  final Value<bool> setValue;
+  final Value<int> rowid;
+  const RewardFlagsTableCompanion({
+    this.id = const Value.absent(),
+    this.nodeId = const Value.absent(),
+    this.flagName = const Value.absent(),
+    this.setValue = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RewardFlagsTableCompanion.insert({
+    required String id,
+    required String nodeId,
+    required String flagName,
+    this.setValue = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       nodeId = Value(nodeId),
+       flagName = Value(flagName);
+  static Insertable<RewardFlagsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? nodeId,
+    Expression<String>? flagName,
+    Expression<bool>? setValue,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (nodeId != null) 'node_id': nodeId,
+      if (flagName != null) 'flag_name': flagName,
+      if (setValue != null) 'set_value': setValue,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RewardFlagsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? nodeId,
+    Value<String>? flagName,
+    Value<bool>? setValue,
+    Value<int>? rowid,
+  }) {
+    return RewardFlagsTableCompanion(
+      id: id ?? this.id,
+      nodeId: nodeId ?? this.nodeId,
+      flagName: flagName ?? this.flagName,
+      setValue: setValue ?? this.setValue,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (nodeId.present) {
+      map['node_id'] = Variable<String>(nodeId.value);
+    }
+    if (flagName.present) {
+      map['flag_name'] = Variable<String>(flagName.value);
+    }
+    if (setValue.present) {
+      map['set_value'] = Variable<bool>(setValue.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RewardFlagsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('nodeId: $nodeId, ')
+          ..write('flagName: $flagName, ')
+          ..write('setValue: $setValue, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1684,6 +1994,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $DialogueChoicesTableTable(this);
   late final $RequirementFlagsTableTable requirementFlagsTable =
       $RequirementFlagsTableTable(this);
+  late final $RewardFlagsTableTable rewardFlagsTable = $RewardFlagsTableTable(
+    this,
+  );
   late final NpcDao npcDao = NpcDao(this as AppDatabase);
   late final DialogueNodeDao dialogueNodeDao = DialogueNodeDao(
     this as AppDatabase,
@@ -1694,6 +2007,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final RequirementFlagDao requirementFlagDao = RequirementFlagDao(
     this as AppDatabase,
   );
+  late final RewardFlagDao rewardFlagDao = RewardFlagDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1703,6 +2017,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     dialogueNodesTable,
     dialogueChoicesTable,
     requirementFlagsTable,
+    rewardFlagsTable,
   ];
 }
 
@@ -2642,6 +2957,197 @@ typedef $$RequirementFlagsTableTableProcessedTableManager =
       RequirementFlagsTableData,
       PrefetchHooks Function()
     >;
+typedef $$RewardFlagsTableTableCreateCompanionBuilder =
+    RewardFlagsTableCompanion Function({
+      required String id,
+      required String nodeId,
+      required String flagName,
+      Value<bool> setValue,
+      Value<int> rowid,
+    });
+typedef $$RewardFlagsTableTableUpdateCompanionBuilder =
+    RewardFlagsTableCompanion Function({
+      Value<String> id,
+      Value<String> nodeId,
+      Value<String> flagName,
+      Value<bool> setValue,
+      Value<int> rowid,
+    });
+
+class $$RewardFlagsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $RewardFlagsTableTable> {
+  $$RewardFlagsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nodeId => $composableBuilder(
+    column: $table.nodeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get flagName => $composableBuilder(
+    column: $table.flagName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get setValue => $composableBuilder(
+    column: $table.setValue,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RewardFlagsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $RewardFlagsTableTable> {
+  $$RewardFlagsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nodeId => $composableBuilder(
+    column: $table.nodeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get flagName => $composableBuilder(
+    column: $table.flagName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get setValue => $composableBuilder(
+    column: $table.setValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RewardFlagsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RewardFlagsTableTable> {
+  $$RewardFlagsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get nodeId =>
+      $composableBuilder(column: $table.nodeId, builder: (column) => column);
+
+  GeneratedColumn<String> get flagName =>
+      $composableBuilder(column: $table.flagName, builder: (column) => column);
+
+  GeneratedColumn<bool> get setValue =>
+      $composableBuilder(column: $table.setValue, builder: (column) => column);
+}
+
+class $$RewardFlagsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RewardFlagsTableTable,
+          RewardFlagsTableData,
+          $$RewardFlagsTableTableFilterComposer,
+          $$RewardFlagsTableTableOrderingComposer,
+          $$RewardFlagsTableTableAnnotationComposer,
+          $$RewardFlagsTableTableCreateCompanionBuilder,
+          $$RewardFlagsTableTableUpdateCompanionBuilder,
+          (
+            RewardFlagsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $RewardFlagsTableTable,
+              RewardFlagsTableData
+            >,
+          ),
+          RewardFlagsTableData,
+          PrefetchHooks Function()
+        > {
+  $$RewardFlagsTableTableTableManager(
+    _$AppDatabase db,
+    $RewardFlagsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RewardFlagsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RewardFlagsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RewardFlagsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> nodeId = const Value.absent(),
+                Value<String> flagName = const Value.absent(),
+                Value<bool> setValue = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RewardFlagsTableCompanion(
+                id: id,
+                nodeId: nodeId,
+                flagName: flagName,
+                setValue: setValue,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String nodeId,
+                required String flagName,
+                Value<bool> setValue = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RewardFlagsTableCompanion.insert(
+                id: id,
+                nodeId: nodeId,
+                flagName: flagName,
+                setValue: setValue,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RewardFlagsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RewardFlagsTableTable,
+      RewardFlagsTableData,
+      $$RewardFlagsTableTableFilterComposer,
+      $$RewardFlagsTableTableOrderingComposer,
+      $$RewardFlagsTableTableAnnotationComposer,
+      $$RewardFlagsTableTableCreateCompanionBuilder,
+      $$RewardFlagsTableTableUpdateCompanionBuilder,
+      (
+        RewardFlagsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $RewardFlagsTableTable,
+          RewardFlagsTableData
+        >,
+      ),
+      RewardFlagsTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2654,4 +3160,6 @@ class $AppDatabaseManager {
       $$DialogueChoicesTableTableTableManager(_db, _db.dialogueChoicesTable);
   $$RequirementFlagsTableTableTableManager get requirementFlagsTable =>
       $$RequirementFlagsTableTableTableManager(_db, _db.requirementFlagsTable);
+  $$RewardFlagsTableTableTableManager get rewardFlagsTable =>
+      $$RewardFlagsTableTableTableManager(_db, _db.rewardFlagsTable);
 }

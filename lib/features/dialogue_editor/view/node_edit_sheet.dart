@@ -8,6 +8,7 @@ import '../../../shared/widgets/gs_text_field.dart';
 import '../providers/dialogue_graph_provider.dart';
 import 'node_picker_modal.dart';
 import 'requirement_flag_sheet.dart';
+import 'reward_flag_sheet.dart';
 
 class NodeEditSheet extends ConsumerStatefulWidget {
   const NodeEditSheet({
@@ -97,9 +98,16 @@ class _NodeEditSheetState extends ConsumerState<NodeEditSheet> {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              'Edit Node',
-              style: Theme.of(context).textTheme.titleLarge,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Edit Node',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                _RewardFlagButton(node: widget.node),
+              ],
             ),
             const SizedBox(height: 16),
             GsTextField(
@@ -332,6 +340,37 @@ class _NodeEditSheetState extends ConsumerState<NodeEditSheet> {
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+  }
+}
+
+class _RewardFlagButton extends ConsumerWidget {
+  const _RewardFlagButton({required this.node});
+
+  final DialogueNode node;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final secondary = isDark ? AppColors.darkSecondary : AppColors.lightSecondary;
+    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+
+    final flagsAsync = ref.watch(rewardFlagsByNodeProvider(node.id));
+    final hasFlags = flagsAsync.valueOrNull?.isNotEmpty == true;
+
+    return IconButton(
+      icon: Icon(
+        hasFlags ? Icons.auto_awesome : Icons.auto_awesome_outlined,
+        size: 18,
+        color: hasFlags ? secondary : mutedColor,
+      ),
+      tooltip: 'Reward flags',
+      onPressed: () => RewardFlagSheet.show(
+        context,
+        nodeId: node.id,
+        speakerName: node.speakerName,
+      ),
+      visualDensity: VisualDensity.compact,
+    );
   }
 }
 

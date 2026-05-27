@@ -7,12 +7,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../data/repositories/drift_dialogue_choice_repository.dart';
 import '../../../data/repositories/drift_dialogue_node_repository.dart';
 import '../../../data/repositories/drift_requirement_flag_repository.dart';
+import '../../../data/repositories/drift_reward_flag_repository.dart';
 import '../../../domain/entities/dialogue_choice.dart';
 import '../../../domain/entities/dialogue_node.dart';
 import '../../../domain/entities/requirement_flag.dart';
+import '../../../domain/entities/reward_flag.dart';
 import '../../../domain/repositories/dialogue_choice_repository.dart';
 import '../../../domain/repositories/dialogue_node_repository.dart';
 import '../../../domain/repositories/requirement_flag_repository.dart';
+import '../../../domain/repositories/reward_flag_repository.dart';
 import '../../canvas/providers/npc_list_provider.dart';
 
 part 'dialogue_graph_provider.g.dart';
@@ -41,10 +44,21 @@ RequirementFlagRepository requirementFlagRepository(
   return DriftRequirementFlagRepository(ref.watch(appDatabaseProvider));
 }
 
+@Riverpod(keepAlive: true)
+RewardFlagRepository rewardFlagRepository(RewardFlagRepositoryRef ref) {
+  return DriftRewardFlagRepository(ref.watch(appDatabaseProvider));
+}
+
 @riverpod
 Stream<List<RequirementFlag>> requirementFlagsByChoice(
     RequirementFlagsByChoiceRef ref, String choiceId) {
   return ref.watch(requirementFlagRepositoryProvider).watchByChoice(choiceId);
+}
+
+@riverpod
+Stream<List<RewardFlag>> rewardFlagsByNode(
+    RewardFlagsByNodeRef ref, String nodeId) {
+  return ref.watch(rewardFlagRepositoryProvider).watchByNode(nodeId);
 }
 
 @riverpod
@@ -105,6 +119,7 @@ class DialogueGraph extends _$DialogueGraph {
     final graph = await future;
     final choiceRepo = ref.read(dialogueChoiceRepositoryProvider);
     final flagRepo = ref.read(requirementFlagRepositoryProvider);
+    final rewardFlagRepo = ref.read(rewardFlagRepositoryProvider);
 
     for (final c in graph.choices.where((c) => c.toNodeId == nodeId)) {
       await choiceRepo.update(UpdateChoiceInput(id: c.id, clearToNodeId: true));
@@ -113,6 +128,7 @@ class DialogueGraph extends _$DialogueGraph {
       await flagRepo.deleteByChoiceId(c.id);
       await choiceRepo.delete(c.id);
     }
+    await rewardFlagRepo.deleteByNodeId(nodeId);
     await ref.read(dialogueNodeRepositoryProvider).delete(nodeId);
   }
 

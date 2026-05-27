@@ -63,6 +63,24 @@ final requirementFlagRepositoryProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef RequirementFlagRepositoryRef = ProviderRef<RequirementFlagRepository>;
+String _$rewardFlagRepositoryHash() =>
+    r'927e804a781b9ea7e54fb5a6cc0705d30966eb42';
+
+/// See also [rewardFlagRepository].
+@ProviderFor(rewardFlagRepository)
+final rewardFlagRepositoryProvider = Provider<RewardFlagRepository>.internal(
+  rewardFlagRepository,
+  name: r'rewardFlagRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$rewardFlagRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RewardFlagRepositoryRef = ProviderRef<RewardFlagRepository>;
 String _$requirementFlagsByChoiceHash() =>
     r'cbc91dc8aa9e06baf77ed9d9ea5a04014839a45e';
 
@@ -211,6 +229,127 @@ class _RequirementFlagsByChoiceProviderElement
 
   @override
   String get choiceId => (origin as RequirementFlagsByChoiceProvider).choiceId;
+}
+
+String _$rewardFlagsByNodeHash() => r'79a55faf78e743066595fddc37978a372f296da5';
+
+/// See also [rewardFlagsByNode].
+@ProviderFor(rewardFlagsByNode)
+const rewardFlagsByNodeProvider = RewardFlagsByNodeFamily();
+
+/// See also [rewardFlagsByNode].
+class RewardFlagsByNodeFamily extends Family<AsyncValue<List<RewardFlag>>> {
+  /// See also [rewardFlagsByNode].
+  const RewardFlagsByNodeFamily();
+
+  /// See also [rewardFlagsByNode].
+  RewardFlagsByNodeProvider call(String nodeId) {
+    return RewardFlagsByNodeProvider(nodeId);
+  }
+
+  @override
+  RewardFlagsByNodeProvider getProviderOverride(
+    covariant RewardFlagsByNodeProvider provider,
+  ) {
+    return call(provider.nodeId);
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'rewardFlagsByNodeProvider';
+}
+
+/// See also [rewardFlagsByNode].
+class RewardFlagsByNodeProvider
+    extends AutoDisposeStreamProvider<List<RewardFlag>> {
+  /// See also [rewardFlagsByNode].
+  RewardFlagsByNodeProvider(String nodeId)
+    : this._internal(
+        (ref) => rewardFlagsByNode(ref as RewardFlagsByNodeRef, nodeId),
+        from: rewardFlagsByNodeProvider,
+        name: r'rewardFlagsByNodeProvider',
+        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+            ? null
+            : _$rewardFlagsByNodeHash,
+        dependencies: RewardFlagsByNodeFamily._dependencies,
+        allTransitiveDependencies:
+            RewardFlagsByNodeFamily._allTransitiveDependencies,
+        nodeId: nodeId,
+      );
+
+  RewardFlagsByNodeProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.nodeId,
+  }) : super.internal();
+
+  final String nodeId;
+
+  @override
+  Override overrideWith(
+    Stream<List<RewardFlag>> Function(RewardFlagsByNodeRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: RewardFlagsByNodeProvider._internal(
+        (ref) => create(ref as RewardFlagsByNodeRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        nodeId: nodeId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<RewardFlag>> createElement() {
+    return _RewardFlagsByNodeProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RewardFlagsByNodeProvider && other.nodeId == nodeId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, nodeId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+mixin RewardFlagsByNodeRef on AutoDisposeStreamProviderRef<List<RewardFlag>> {
+  /// The parameter `nodeId` of this provider.
+  String get nodeId;
+}
+
+class _RewardFlagsByNodeProviderElement
+    extends AutoDisposeStreamProviderElement<List<RewardFlag>>
+    with RewardFlagsByNodeRef {
+  _RewardFlagsByNodeProviderElement(super.provider);
+
+  @override
+  String get nodeId => (origin as RewardFlagsByNodeProvider).nodeId;
 }
 
 String _$dialogueNodesListHash() => r'9394ef8d60941626581e0591801f87c24ab8e20b';
@@ -459,7 +598,7 @@ class _DialogueChoicesListProviderElement
   String get npcId => (origin as DialogueChoicesListProvider).npcId;
 }
 
-String _$dialogueGraphHash() => r'4685abb67ba65d116de42a4f5938d28e485b9576';
+String _$dialogueGraphHash() => r'36fdf312d6c75c69b05b0e505e7bf1ae6ca9ca6a';
 
 abstract class _$DialogueGraph
     extends BuildlessAutoDisposeAsyncNotifier<DialogueGraphState> {

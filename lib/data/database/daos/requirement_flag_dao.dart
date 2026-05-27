@@ -21,6 +21,11 @@ class RequirementFlagDao extends DatabaseAccessor<AppDatabase>
   Future<void> deleteById(String id) =>
       (delete(requirementFlagsTable)..where((t) => t.id.equals(id))).go();
 
+  Future<List<RequirementFlagsTableData>> getByChoiceIds(List<String> ids) =>
+      (select(requirementFlagsTable)
+            ..where((t) => t.choiceId.isIn(ids)))
+          .get();
+
   Future<void> deleteByChoiceId(String choiceId) =>
       (delete(requirementFlagsTable)
             ..where((t) => t.choiceId.equals(choiceId)))

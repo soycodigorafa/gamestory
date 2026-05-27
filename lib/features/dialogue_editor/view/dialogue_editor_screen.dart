@@ -68,10 +68,26 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add node',
-        onPressed: () => _addNode(context),
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton.small(
+            heroTag: 'addNode',
+            tooltip: 'Add node',
+            onPressed: () => _addNode(context),
+            child: const Icon(Icons.add),
+          ),
+          const SizedBox(height: 12),
+          FloatingActionButton(
+            heroTag: 'playback',
+            tooltip: 'Play from start',
+            onPressed: (graphAsync.valueOrNull?.nodes.isNotEmpty ?? false)
+                ? () => context.goNamed('playback',
+                    pathParameters: {'id': widget.npcId})
+                : null,
+            child: const Icon(Icons.play_arrow_rounded),
+          ),
+        ],
       ),
       body: Builder(builder: (context) {
         if (graphAsync.hasError && !graphAsync.hasValue) {
