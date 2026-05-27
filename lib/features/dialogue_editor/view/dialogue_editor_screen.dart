@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/dialogue_node.dart';
 import '../../../features/canvas/providers/npc_list_provider.dart';
@@ -37,6 +38,11 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: 'Back',
+          onPressed: () => context.goNamed('canvas'),
+        ),
         title: Text(npcName),
         actions: [
           IconButton(
@@ -46,8 +52,12 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
             tooltip: direction == Axis.vertical
                 ? 'Switch to horizontal layout'
                 : 'Switch to vertical layout',
-            onPressed: () =>
-                ref.read(layoutDirectionProvider.notifier).toggle(),
+            onPressed: () {
+                ref.read(layoutDirectionProvider.notifier).toggle();
+                ref
+                    .read(dialogueGraphProvider(widget.npcId).notifier)
+                    .autoArrange();
+              },
           ),
           IconButton(
             icon: const Icon(Icons.auto_fix_high),
