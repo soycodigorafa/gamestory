@@ -73,25 +73,27 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
         onPressed: () => _addNode(context),
         child: const Icon(Icons.add),
       ),
-      body: graphAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
-        data: (graph) {
-          if (graph.nodes.isEmpty) {
-            return GsEmptyState(
-              message:
-                  'No nodes yet.\nTap + to add the first dialogue node.',
-              icon: Icons.chat_bubble_outline,
-              action: FilledButton.icon(
-                onPressed: () => _addNode(context),
-                icon: const Icon(Icons.add),
-                label: const Text('Add node'),
-              ),
-            );
-          }
-          return _buildGraph(context, graph, direction);
-        },
-      ),
+      body: Builder(builder: (context) {
+        if (graphAsync.hasError && !graphAsync.hasValue) {
+          return Center(child: Text('Error: ${graphAsync.error}'));
+        }
+        final graph = graphAsync.valueOrNull;
+        if (graph == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (graph.nodes.isEmpty) {
+          return GsEmptyState(
+            message: 'No nodes yet.\nTap + to add the first dialogue node.',
+            icon: Icons.chat_bubble_outline,
+            action: FilledButton.icon(
+              onPressed: () => _addNode(context),
+              icon: const Icon(Icons.add),
+              label: const Text('Add node'),
+            ),
+          );
+        }
+        return _buildGraph(context, graph, direction);
+      }),
     );
   }
 

@@ -67,8 +67,17 @@ class DialogueGraph extends _$DialogueGraph {
         ));
   }
 
-  Future<void> moveNode(String nodeId, double x, double y) {
-    return ref
+  Future<void> moveNode(String nodeId, double x, double y) async {
+    final current = state.valueOrNull;
+    if (current != null) {
+      state = AsyncData(DialogueGraphState(
+        nodes: current.nodes
+            .map((n) => n.id == nodeId ? n.copyWith(layoutX: x, layoutY: y) : n)
+            .toList(),
+        choices: current.choices,
+      ));
+    }
+    await ref
         .read(dialogueNodeRepositoryProvider)
         .update(UpdateNodeInput(id: nodeId, layoutX: x, layoutY: y));
   }
