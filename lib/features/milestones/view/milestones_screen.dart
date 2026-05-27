@@ -18,7 +18,7 @@ class MilestonesScreen extends StatelessWidget {
     final allComplete = milestones.every((m) => m.isCompleted);
 
     final thresholds =
-        milestones.map((m) => m.thresholdPercent / 100.0).toList();
+        milestones.map((m) => m.targetCount / 100.0).toList();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -145,7 +145,7 @@ class _MilestoneCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isCompleted = milestone.isCompleted;
-    final thresholdProgress = milestone.thresholdPercent / 100.0;
+    final thresholdProgress = milestone.targetCount / 100.0;
     final isReachable = currentProgress >= thresholdProgress;
 
     return AnimatedContainer(
@@ -198,7 +198,7 @@ class _MilestoneCard extends StatelessWidget {
                 Text(
                   isCompleted && milestone.completedAt != null
                       ? 'Completed ${_formatDate(milestone.completedAt!)}'
-                      : '${milestone.thresholdPercent}% of nodes required',
+                      : '${milestone.targetCount}% of nodes required',
                   style: const TextStyle(
                     color: AppColors.muted,
                     fontSize: 12,
@@ -216,7 +216,7 @@ class _MilestoneCard extends StatelessWidget {
                     : GsBadgeStatus.locked,
             label: isCompleted
                 ? 'Done'
-                : '${milestone.thresholdPercent}%',
+                : '${milestone.targetCount}%',
           ),
         ],
       ),
