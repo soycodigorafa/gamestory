@@ -283,13 +283,13 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] Theme toggle button in app bar (sun ↔ moon icon)
 - [x] Shared widgets: `GsButton`, `GsCard`, `GsTextField`, `GsDialog`, `GsEmptyState`
 
-### M2 — NPC Canvas
-- [ ] `Npc` entity + `NpcRepository` interface
-- [ ] `npcs` Drift table + DAO + `DriftNpcRepository` + `AppDatabase` v1
-- [ ] `npcListProvider` (`AsyncNotifier`)
-- [ ] `NpcCanvasScreen`: `InteractiveViewer` + `Stack` of draggable `NpcCard` widgets
-- [ ] Long-press `NpcCard` → context menu (Edit, Delete)
-- [ ] Create / rename / delete NPC flows
+### M2 — NPC Canvas *(complete)*
+- [x] `Npc` entity + `NpcRepository` interface
+- [x] `npcs` Drift table + DAO + `DriftNpcRepository` + `AppDatabase` v1
+- [x] `npcListProvider` (`AsyncNotifier`)
+- [x] `NpcCanvasScreen`: `InteractiveViewer` + `Stack` of draggable `NpcCard` widgets
+- [x] Long-press `NpcCard` → context menu (Edit, Delete)
+- [x] Create / rename / delete NPC flows
 
 ### M3 — Dialogue Node Editor
 - [ ] `DialogueNode`, `DialogueChoice` entities + repository interfaces
