@@ -335,7 +335,34 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] Side navigation rail (tablet)
 - [x] Navigation drawer (desktop)
 
-### M10 — Other Formats *(stretch)*
+### M10 — Project Management *(stretch)*
+Introduce a first-class **project** concept so users can manage multiple story projects independently on-device.
+- [ ] `Project` domain entity (id, name, description, createdAt, updatedAt)
+- [ ] `projects` Drift table + DAO (DB migration v5); all existing tables gain a `projectId` foreign key
+- [ ] Projects screen: list, create, rename, delete projects
+- [ ] Active-project context propagated app-wide via a `currentProjectProvider`
+- [ ] Per-project export: save the whole project as a versioned `.gamestory` JSON file (schema version field for forward compatibility)
+- [ ] Import: restore a project from a `.gamestory` file, handling schema version mismatches gracefully
+
+### M11 — Account Support: Auth *(stretch)*
+Add optional user accounts backed by a remote auth provider (e.g. Firebase Auth). The feature is **disabled by default** and toggled on via a compile-time env flag (`ENABLE_AUTH=true`). When disabled, no auth UI or dependencies are loaded. The app remains **fully functional offline** regardless of flag value.
+- [ ] `ENABLE_AUTH` env flag: when `false`, all auth code is excluded from the build and Settings shows no account section
+- [ ] Auth domain entities: `UserAccount` (uid, email, displayName, photoUrl)
+- [ ] `AuthRepository` interface + Firebase Auth implementation (email/password + Google Sign-In)
+- [ ] `authStateProvider` (stream-based); reacts to auth changes without app restart
+- [ ] Account section inside the existing **Settings** screen (not a separate screen): sign-in / sign-up form, signed-in user profile (display name, email, avatar), sign-out action
+- [ ] Form validation and inline error handling within the Settings account section
+
+### M12 — Account Support: Cloud Sync *(stretch)*
+Allow signed-in users to back up and sync projects via a **custom backend API**. Offline-first: local DB remains the source of truth; cloud is a secondary store.
+- [ ] `SyncRepository` interface: push local project → remote API, pull remote project → local
+- [ ] HTTP client abstraction for the custom backend (base URL configurable via env)
+- [ ] Conflict resolution strategy: last-write-wins with `updatedAt` timestamp comparison
+- [ ] Projects screen: sync status badge per project (synced / pending / error)
+- [ ] Background sync trigger on app foreground (connectivity-aware)
+- [ ] Manual "Sync now" action + sync progress indicator
+
+### M13 — Other Formats *(stretch)*
 - [ ] Ink (`.ink`) export
 - [ ] Yarn Spinner (`.yarn`) export
 
