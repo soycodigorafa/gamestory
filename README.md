@@ -330,10 +330,10 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] Node add / delete entrance & exit animations
 - [x] NPC card appear animation on canvas
 
-### M9 — Responsive Polish
-- [ ] Bottom navigation bar (phone)
-- [ ] Side navigation rail (tablet)
-- [ ] Navigation drawer (desktop)
+### M9 — Responsive Polish *(complete)*
+- [x] Bottom navigation bar (phone)
+- [x] Side navigation rail (tablet)
+- [x] Navigation drawer (desktop)
 
 ### M10 — Other Formats *(stretch)*
 - [ ] Ink (`.ink`) export

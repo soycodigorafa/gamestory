@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/npc.dart';
 import '../../../features/export/providers/import_provider.dart';
-import '../../../features/settings/providers/theme_mode_provider.dart';
 import '../../../shared/widgets/gs_animated_card.dart';
 import '../../../shared/widgets/gs_dialog.dart';
 import '../../../shared/widgets/gs_empty_state.dart';
@@ -24,8 +23,6 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeModeNotifierProvider);
-    final isDark = themeMode == ThemeMode.dark;
     final npcAsync = ref.watch(npcListProvider);
 
     return Scaffold(
@@ -38,12 +35,9 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
             onPressed: () => _importNpc(context),
           ),
           IconButton(
-            icon: Icon(
-                isDark ? Icons.wb_sunny_outlined : Icons.nightlight_round),
-            tooltip:
-                isDark ? 'Switch to light mode' : 'Switch to dark mode',
-            onPressed: () =>
-                ref.read(themeModeNotifierProvider.notifier).toggle(),
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: 'Settings',
+            onPressed: () => context.pushNamed('settings'),
           ),
         ],
       ),

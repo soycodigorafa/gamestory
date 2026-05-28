@@ -13,6 +13,7 @@ class GameStoryApp extends ConsumerWidget {
     final themeMode = ref.watch(themeModeNotifierProvider);
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'GameStory',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
