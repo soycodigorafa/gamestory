@@ -26,9 +26,19 @@ class NpcList extends _$NpcList {
     return ref.watch(npcRepositoryProvider).watchAll();
   }
 
-  Future<void> createNpc(String name, {String description = ''}) {
+  Future<void> createNpc(
+    String name, {
+    String description = '',
+    double canvasX = 0,
+    double canvasY = 0,
+  }) {
     return ref.read(npcRepositoryProvider).create(
-          CreateNpcInput(name: name, description: description),
+          CreateNpcInput(
+            name: name,
+            description: description,
+            canvasX: canvasX,
+            canvasY: canvasY,
+          ),
         );
   }
 

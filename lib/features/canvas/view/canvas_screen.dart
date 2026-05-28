@@ -20,6 +20,13 @@ class CanvasScreen extends ConsumerStatefulWidget {
 
 class _CanvasScreenState extends ConsumerState<CanvasScreen> {
   final Map<String, Offset> _localOffsets = {};
+  final _transformationController = TransformationController();
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +76,7 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
 
   Widget _buildCanvas(List<Npc> npcs) {
     return InteractiveViewer(
+      transformationController: _transformationController,
       constrained: false,
       boundaryMargin: const EdgeInsets.all(500),
       minScale: 0.3,
@@ -117,6 +125,14 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
   }
 
   Future<void> _showCreateDialog(BuildContext context) async {
+    final mq = MediaQuery.of(context);
+    final appBarHeight = kToolbarHeight + mq.padding.top;
+    final viewportCenter = Offset(
+      mq.size.width / 2,
+      (mq.size.height - appBarHeight) / 2,
+    );
+    final canvasPos = _transformationController.toScene(viewportCenter);
+
     final controller = TextEditingController();
     final confirmed = await GsDialog.show(
       context: context,
@@ -133,7 +149,11 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
     if (confirmed == true && controller.text.trim().isNotEmpty) {
       await ref
           .read(npcListProvider.notifier)
-          .createNpc(controller.text.trim());
+          .createNpc(
+            controller.text.trim(),
+            canvasX: canvasPos.dx,
+            canvasY: canvasPos.dy,
+          );
     }
     controller.dispose();
   }
