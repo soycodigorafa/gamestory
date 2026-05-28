@@ -85,6 +85,8 @@ class DialogueGraph extends _$DialogueGraph {
   Future<DialogueNode> addNode({
     double layoutX = 100,
     double layoutY = 100,
+    String speakerName = '',
+    String dialogueText = '',
   }) async {
     final graph = await future;
     final isFirst = graph.nodes.isEmpty;
@@ -93,6 +95,8 @@ class DialogueGraph extends _$DialogueGraph {
           isStart: isFirst,
           layoutX: layoutX,
           layoutY: layoutY,
+          speakerName: speakerName,
+          dialogueText: dialogueText,
         ));
   }
 

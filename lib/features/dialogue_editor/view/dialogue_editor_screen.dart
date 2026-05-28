@@ -8,6 +8,7 @@ import '../../../features/export/view/export_sheet.dart';
 import '../../../shared/widgets/gs_animated_card.dart';
 import '../../../shared/widgets/gs_dialog.dart';
 import '../../../shared/widgets/gs_empty_state.dart';
+import '../../../shared/widgets/gs_text_field.dart';
 import '../providers/dialogue_graph_provider.dart';
 import '../widgets/node_card.dart';
 import '../widgets/node_connection_painter.dart';
@@ -203,10 +204,61 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
   }
 
   Future<void> _addNode(BuildContext context) async {
-    final notifier =
-        ref.read(dialogueGraphProvider(widget.npcId).notifier);
-    final graph = ref.read(dialogueGraphProvider(widget.npcId)).valueOrNull;
+    final speakerCtrl = TextEditingController();
+    final textCtrl = TextEditingController();
 
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          return AlertDialog(
+            title: const Text('New Node'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GsTextField(
+                  controller: speakerCtrl,
+                  label: 'Speaker',
+                  hint: 'e.g. Village Elder',
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 12),
+                GsTextField(
+                  controller: textCtrl,
+                  label: 'Dialogue text',
+                  hint: 'What does the character say?',
+                  maxLines: 3,
+                  autofocus: true,
+                  textInputAction: TextInputAction.done,
+                  onChanged: (_) => setDialogState(() {}),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: textCtrl.text.trim().isNotEmpty
+                    ? () => Navigator.of(ctx).pop(true)
+                    : null,
+                child: const Text('Create'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    final speaker = speakerCtrl.text.trim();
+    final text = textCtrl.text.trim();
+    speakerCtrl.dispose();
+    textCtrl.dispose();
+
+    if (confirmed != true || text.isEmpty) return;
+
+    final graph = ref.read(dialogueGraphProvider(widget.npcId)).valueOrNull;
     double x = 100;
     double y = 100;
     if (graph != null && graph.nodes.isNotEmpty) {
@@ -215,20 +267,14 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
       y = last.layoutY + NodeCard.kHeight + 60;
     }
 
-    final newNode = await notifier.addNode(layoutX: x, layoutY: y);
-
-    if (!context.mounted) return;
-    final currentGraph =
-        ref.read(dialogueGraphProvider(widget.npcId)).valueOrNull;
-    if (currentGraph == null) return;
-
-    await NodeEditSheet.show(
-      context,
-      node: newNode,
-      choices: const [],
-      npcId: widget.npcId,
-      allNodes: currentGraph.nodes,
-    );
+    await ref
+        .read(dialogueGraphProvider(widget.npcId).notifier)
+        .addNode(
+          layoutX: x,
+          layoutY: y,
+          speakerName: speaker,
+          dialogueText: text,
+        );
   }
 
   Future<void> _showEditSheet(
