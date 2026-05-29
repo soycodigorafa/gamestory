@@ -1,6 +1,7 @@
 class Npc {
   const Npc({
     required this.id,
+    required this.projectId,
     required this.name,
     required this.description,
     required this.canvasX,
@@ -11,6 +12,7 @@ class Npc {
   });
 
   final String id;
+  final String projectId;
   final String name;
   final String description;
   final double canvasX;
@@ -21,6 +23,7 @@ class Npc {
 
   Npc copyWith({
     String? id,
+    String? projectId,
     String? name,
     String? description,
     double? canvasX,
@@ -31,6 +34,7 @@ class Npc {
   }) {
     return Npc(
       id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
       name: name ?? this.name,
       description: description ?? this.description,
       canvasX: canvasX ?? this.canvasX,
@@ -45,6 +49,7 @@ class Npc {
 class CreateNpcInput {
   const CreateNpcInput({
     required this.name,
+    required this.projectId,
     this.description = '',
     this.canvasX = 0,
     this.canvasY = 0,
@@ -52,6 +57,7 @@ class CreateNpcInput {
   });
 
   final String name;
+  final String projectId;
   final String description;
   final double canvasX;
   final double canvasY;

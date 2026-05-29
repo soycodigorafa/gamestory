@@ -5,6 +5,7 @@ class DialogueChoicesTable extends Table {
   String get tableName => 'dialogue_choices';
 
   TextColumn get id => text()();
+  TextColumn get projectId => text().withDefault(const Constant(''))();
   TextColumn get fromNodeId => text()();
   TextColumn get toNodeId => text().nullable()();
   TextColumn get choiceText => text().withDefault(const Constant(''))();

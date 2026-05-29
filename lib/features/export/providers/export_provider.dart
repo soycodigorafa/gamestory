@@ -4,7 +4,8 @@ import '../../../domain/entities/requirement_flag.dart';
 import '../../../domain/entities/reward_flag.dart';
 import '../../canvas/providers/npc_list_provider.dart';
 import '../../dialogue_editor/providers/dialogue_graph_provider.dart';
-import '../services/export_service.dart';
+import '../../projects/providers/project_list_provider.dart';
+import '../services/gsp_export_service.dart';
 
 part 'export_provider.g.dart';
 
@@ -13,49 +14,48 @@ class Export extends _$Export {
   @override
   Future<void> build() async {}
 
-  Future<void> exportJson(String npcId) async {
+  Future<void> exportGsp(String projectId) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _doExport(npcId, json: true));
+    state = await AsyncValue.guard(() => _doExportGsp(projectId));
   }
 
-  Future<void> exportCsv(String npcId) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _doExport(npcId, json: false));
-  }
+  Future<void> _doExportGsp(String projectId) async {
+    final project = await ref
+        .read(projectRepositoryProvider)
+        .watchAll()
+        .first
+        .then((list) => list.firstWhere((p) => p.id == projectId));
 
-  Future<void> _doExport(String npcId, {required bool json}) async {
     final npcs = await ref.read(npcListProvider.future);
-    final npc = npcs.firstWhere((n) => n.id == npcId);
 
-    final graph = await ref.read(dialogueGraphProvider(npcId).future);
-    final choiceIds = graph.choices.map((c) => c.id).toList();
-    final nodeIds = graph.nodes.map((n) => n.id).toList();
+    final npcsData = <NpcGraphData>[];
+    for (final npc in npcs) {
+      final graph = await ref.read(dialogueGraphProvider(npc.id).future);
+      final choiceIds = graph.choices.map((c) => c.id).toList();
+      final nodeIds = graph.nodes.map((n) => n.id).toList();
 
-    final reqFlags = choiceIds.isEmpty
-        ? <RequirementFlag>[]
-        : await ref
-            .read(requirementFlagRepositoryProvider)
-            .getByChoiceIds(choiceIds);
+      final reqFlags = choiceIds.isEmpty
+          ? <RequirementFlag>[]
+          : await ref
+              .read(requirementFlagRepositoryProvider)
+              .getByChoiceIds(choiceIds);
 
-    final rewFlags = nodeIds.isEmpty
-        ? <RewardFlag>[]
-        : await ref
-            .read(rewardFlagRepositoryProvider)
-            .getByNodeIds(nodeIds);
+      final rewFlags = nodeIds.isEmpty
+          ? <RewardFlag>[]
+          : await ref
+              .read(rewardFlagRepositoryProvider)
+              .getByNodeIds(nodeIds);
 
-    final data = NpcGraphData(
-      npc: npc,
-      nodes: graph.nodes,
-      choices: graph.choices,
-      requirementFlags: reqFlags,
-      rewardFlags: rewFlags,
-    );
-
-    const service = ExportService();
-    if (json) {
-      await service.exportJson(data);
-    } else {
-      await service.exportCsv(data);
+      npcsData.add(NpcGraphData(
+        npc: npc,
+        nodes: graph.nodes,
+        choices: graph.choices,
+        requirementFlags: reqFlags,
+        rewardFlags: rewFlags,
+      ));
     }
+
+    const service = GspExportService();
+    await service.exportGsp(project, npcsData);
   }
 }

@@ -5,6 +5,7 @@ class DialogueNodesTable extends Table {
   String get tableName => 'dialogue_nodes';
 
   TextColumn get id => text()();
+  TextColumn get projectId => text().withDefault(const Constant(''))();
   TextColumn get npcId => text()();
   TextColumn get speakerName => text().withDefault(const Constant(''))();
   TextColumn get dialogueText => text().withDefault(const Constant(''))();

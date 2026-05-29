@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/dialogue_node.dart';
 import '../../../features/canvas/providers/npc_list_provider.dart';
-import '../../../features/export/view/export_sheet.dart';
 import '../../../shared/widgets/gs_animated_card.dart';
 import '../../../shared/widgets/gs_dialog.dart';
 import '../../../shared/widgets/gs_empty_state.dart';
@@ -71,12 +70,6 @@ class _DialogueEditorScreenState extends ConsumerState<DialogueEditorScreen> {
             onPressed: () => ref
                 .read(dialogueGraphProvider(widget.npcId).notifier)
                 .autoArrange(),
-          ),
-          IconButton(
-            icon: const Icon(Icons.share_outlined),
-            tooltip: 'Export dialogue',
-            onPressed: () =>
-                ExportSheet.show(context, npcId: widget.npcId),
           ),
         ],
       ),

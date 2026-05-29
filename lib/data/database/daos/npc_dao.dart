@@ -12,6 +12,9 @@ class NpcDao extends DatabaseAccessor<AppDatabase> with _$NpcDaoMixin {
   Stream<List<NpcsTableData>> watchAll() =>
       select(npcsTable).watch();
 
+  Stream<List<NpcsTableData>> watchByProject(String projectId) =>
+      (select(npcsTable)..where((t) => t.projectId.equals(projectId))).watch();
+
   Future<NpcsTableData?> findById(String id) =>
       (select(npcsTable)..where((t) => t.id.equals(id))).getSingleOrNull();
 

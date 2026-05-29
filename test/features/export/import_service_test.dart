@@ -2,15 +2,43 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gamestory/domain/entities/dialogue_choice.dart';
 import 'package:gamestory/domain/entities/dialogue_node.dart';
 import 'package:gamestory/domain/entities/npc.dart';
+import 'package:gamestory/domain/entities/project.dart';
 import 'package:gamestory/domain/entities/requirement_flag.dart';
 import 'package:gamestory/domain/entities/reward_flag.dart';
 import 'package:gamestory/domain/repositories/dialogue_choice_repository.dart';
 import 'package:gamestory/domain/repositories/dialogue_node_repository.dart';
 import 'package:gamestory/domain/repositories/npc_repository.dart';
+import 'package:gamestory/domain/repositories/project_repository.dart';
 import 'package:gamestory/domain/repositories/requirement_flag_repository.dart';
 import 'package:gamestory/domain/repositories/reward_flag_repository.dart';
-import 'package:gamestory/features/export/services/export_service.dart';
-import 'package:gamestory/features/export/services/import_service.dart';
+import 'package:gamestory/features/export/services/gsp_import_service.dart';
+
+class _FakeProjectRepo implements ProjectRepository {
+  final List<Project> created = [];
+  int _counter = 0;
+
+  @override
+  Stream<List<Project>> watchAll() => Stream.value(created);
+
+  @override
+  Future<Project> create(CreateProjectInput input) async {
+    final proj = Project(
+      id: 'new-proj-${_counter++}',
+      name: input.name,
+      description: input.description,
+      createdAt: DateTime(2025),
+      updatedAt: DateTime(2025),
+    );
+    created.add(proj);
+    return proj;
+  }
+
+  @override
+  Future<void> update(UpdateProjectInput input) async {}
+
+  @override
+  Future<void> delete(String id) async {}
+}
 
 class _FakeNpcRepo implements NpcRepository {
   final List<Npc> created = [];
@@ -19,9 +47,13 @@ class _FakeNpcRepo implements NpcRepository {
   Stream<List<Npc>> watchAll() => const Stream.empty();
 
   @override
+  Stream<List<Npc>> watchByProject(String projectId) => const Stream.empty();
+
+  @override
   Future<Npc> create(CreateNpcInput input) async {
     final npc = Npc(
       id: 'new-npc-${created.length}',
+      projectId: input.projectId,
       name: input.name,
       description: input.description,
       canvasX: input.canvasX,
@@ -164,14 +196,16 @@ class _FakeRewFlagRepo implements RewardFlagRepository {
   Future<void> deleteByNodeId(String nodeId) async {}
 }
 
-ImportService _makeService({
+GspImportService _makeService({
+  _FakeProjectRepo? projectRepo,
   _FakeNpcRepo? npcRepo,
   _FakeNodeRepo? nodeRepo,
   _FakeChoiceRepo? choiceRepo,
   _FakeReqFlagRepo? reqRepo,
   _FakeRewFlagRepo? rewRepo,
 }) {
-  return ImportService(
+  return GspImportService(
+    projectRepo: projectRepo ?? _FakeProjectRepo(),
     npcRepo: npcRepo ?? _FakeNpcRepo(),
     nodeRepo: nodeRepo ?? _FakeNodeRepo(),
     choiceRepo: choiceRepo ?? _FakeChoiceRepo(),
@@ -180,7 +214,8 @@ ImportService _makeService({
   );
 }
 
-Map<String, dynamic> _buildExportMap({
+Map<String, dynamic> _buildGspMap({
+  String projectName = 'Test Project',
   String npcName = 'Elara',
   List<Map<String, dynamic>>? nodes,
   List<Map<String, dynamic>>? choices,
@@ -188,32 +223,37 @@ Map<String, dynamic> _buildExportMap({
   List<Map<String, dynamic>>? rewFlags,
 }) {
   return {
-    'version': 1,
+    'schemaVersion': 1,
     'exportedAt': DateTime(2025).toIso8601String(),
-    'npc': {
-      'id': 'old-npc',
-      'name': npcName,
-      'description': '',
-      'colorHex': '#7B61FF',
-      'canvasX': 100.0,
-      'canvasY': 200.0,
-    },
-    'nodes': nodes ?? [],
-    'choices': choices ?? [],
-    'requirementFlags': reqFlags ?? [],
-    'rewardFlags': rewFlags ?? [],
+    'project': {'name': projectName, 'description': ''},
+    'npcs': [
+      {
+        'id': 'old-npc',
+        'name': npcName,
+        'description': '',
+        'colorHex': '#7B61FF',
+        'canvasX': 100.0,
+        'canvasY': 200.0,
+        'nodes': nodes ?? [],
+        'choices': choices ?? [],
+        'requirementFlags': reqFlags ?? [],
+        'rewardFlags': rewFlags ?? [],
+      }
+    ],
   };
 }
 
 void main() {
-  group('ImportService', () {
-    test('creates NPC with correct name', () async {
+  group('GspImportService', () {
+    test('creates project and NPC with correct names', () async {
+      final projectRepo = _FakeProjectRepo();
       final npcRepo = _FakeNpcRepo();
-      final service = _makeService(npcRepo: npcRepo);
-      final map = _buildExportMap(npcName: 'Gandalf');
+      final service = _makeService(projectRepo: projectRepo, npcRepo: npcRepo);
+      final map = _buildGspMap(projectName: 'My RPG', npcName: 'Gandalf');
       final result = await service.importFromMap(map);
-      expect(result.npc.name, 'Gandalf');
-      expect(npcRepo.created.length, 1);
+      expect(result.project.name, 'My RPG');
+      expect(result.npcCount, 1);
+      expect(npcRepo.created.first.name, 'Gandalf');
     });
 
     test('creates nodes and remaps IDs for choices', () async {
@@ -221,7 +261,7 @@ void main() {
       final choiceRepo = _FakeChoiceRepo();
       final service = _makeService(nodeRepo: nodeRepo, choiceRepo: choiceRepo);
 
-      final map = _buildExportMap(
+      final map = _buildGspMap(
         nodes: [
           {
             'id': 'old-n1',
@@ -252,7 +292,7 @@ void main() {
       );
 
       final result = await service.importFromMap(map);
-      expect(result.nodeCount, 2);
+      expect(result.npcCount, 1);
       expect(nodeRepo.created.length, 2);
       expect(choiceRepo.created.length, 1);
 
@@ -266,7 +306,7 @@ void main() {
       final reqRepo = _FakeReqFlagRepo();
       final service = _makeService(choiceRepo: choiceRepo, reqRepo: reqRepo);
 
-      final map = _buildExportMap(
+      final map = _buildGspMap(
         nodes: [
           {
             'id': 'old-n1',
@@ -306,7 +346,7 @@ void main() {
       final rewRepo = _FakeRewFlagRepo();
       final service = _makeService(nodeRepo: nodeRepo, rewRepo: rewRepo);
 
-      final map = _buildExportMap(
+      final map = _buildGspMap(
         nodes: [
           {
             'id': 'old-n1',
@@ -332,56 +372,13 @@ void main() {
       expect(rewRepo.created.first.nodeId, nodeRepo.created.first.id);
     });
 
-    test('throws FormatException for unsupported version', () async {
+    test('throws FormatException for unsupported schemaVersion', () async {
       final service = _makeService();
-      final map = _buildExportMap()..['version'] = 99;
+      final map = _buildGspMap()..['schemaVersion'] = 99;
       expect(
         () => service.importFromMap(map),
         throwsA(isA<FormatException>()),
       );
-    });
-
-    test('round-trip: export then import preserves NPC name and node count',
-        () async {
-      final epoch = DateTime.fromMillisecondsSinceEpoch(0);
-      final npc = Npc(
-        id: 'npc-1',
-        name: 'Elara',
-        description: 'A merchant',
-        canvasX: 0,
-        canvasY: 0,
-        colorHex: '#7B61FF',
-        createdAt: epoch,
-        updatedAt: epoch,
-      );
-      final node = DialogueNode(
-        id: 'n1',
-        npcId: 'npc-1',
-        speakerName: 'Elara',
-        dialogueText: 'Hi',
-        isStart: true,
-        layoutX: 0,
-        layoutY: 0,
-      );
-      final data = NpcGraphData(
-        npc: npc,
-        nodes: [node],
-        choices: [],
-        requirementFlags: [],
-        rewardFlags: [],
-      );
-
-      const exporter = ExportService();
-      final map = exporter.buildJsonMap(data);
-
-      final npcRepo = _FakeNpcRepo();
-      final nodeRepo = _FakeNodeRepo();
-      final service = _makeService(npcRepo: npcRepo, nodeRepo: nodeRepo);
-      final result = await service.importFromMap(map);
-
-      expect(result.npc.name, 'Elara');
-      expect(result.nodeCount, 1);
-      expect(nodeRepo.created.first.speakerName, 'Elara');
     });
   });
 }

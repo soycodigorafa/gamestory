@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../features/canvas/view/canvas_screen.dart';
 import '../features/dialogue_editor/view/dialogue_editor_screen.dart';
 import '../features/playback/view/playback_screen.dart';
+import '../features/projects/view/projects_screen.dart';
 import '../features/settings/view/about_screen.dart';
 import '../features/settings/view/settings_screen.dart';
 
@@ -11,18 +12,23 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      name: 'canvas',
-      builder: (context, state) => const CanvasScreen(),
+      name: 'projects',
+      builder: (context, state) => const ProjectsScreen(),
     ),
     GoRoute(
-      path: '/settings',
-      name: 'settings',
-      builder: (context, state) => const SettingsScreen(),
+      path: '/canvas',
+      name: 'canvas',
+      builder: (context, state) => const CanvasScreen(),
     ),
     GoRoute(
       path: '/about',
       name: 'about',
       builder: (context, state) => const AboutScreen(),
+    ),
+    GoRoute(
+      path: '/settings',
+      name: 'settings',
+      builder: (context, state) => const SettingsScreen(),
     ),
     GoRoute(
       path: '/npc/:id',

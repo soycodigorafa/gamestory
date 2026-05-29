@@ -35,7 +35,7 @@ GameStory is an offline-first tool for narrative designers and game developers t
 - **Reward flags** — set flag values when a node is entered, enabling progression logic
 - **Playback / simulation** — in-memory dialogue walk-through; locked choices are dimmed with a lock indicator
 - **Dark / light theme** — Material 3, dark by default, switchable with a single tap in the app bar
-- **JSON export / import** — export any NPC's dialogue graph as a portable `.gamestory.json` file; import to restore it on any device
+- **JSON export / import** — export any NPC's dialogue graph as a portable `.gsp` file; import to restore it on any device
 - **CSV export** — export dialogue graph as a flat `.csv` for spreadsheet review
 - **Offline-first** — all data persisted locally with Drift (SQLite); no account required
 
@@ -322,9 +322,9 @@ Get the app running with theme infrastructure and shared widgets.
 - [x] Flag debug panel (collapsible bottom panel, shows live flagMap)
 
 ### M7 — Export & Import *(complete)*
-- [x] JSON export (NPC graph → `.gamestory.json`) via `share_plus`
+- [x] JSON export (NPC graph → `.gsp`) via `share_plus`
 - [x] CSV export (dialogue graph → flat `.csv`) via `share_plus`
-- [x] JSON import (restore NPC graph from `.gamestory.json`)
+- [x] JSON import (restore NPC graph from `.gsp`)
 
 ### M8 — Animations *(complete)*
 - [x] Node add / delete entrance & exit animations
@@ -337,12 +337,12 @@ Get the app running with theme infrastructure and shared widgets.
 
 ### M10 — Project Management *(stretch)*
 Introduce a first-class **project** concept so users can manage multiple story projects independently on-device.
-- [ ] `Project` domain entity (id, name, description, createdAt, updatedAt)
-- [ ] `projects` Drift table + DAO (DB migration v5); all existing tables gain a `projectId` foreign key
-- [ ] Projects screen: list, create, rename, delete projects
-- [ ] Active-project context propagated app-wide via a `currentProjectProvider`
-- [ ] Per-project export: save the whole project as a versioned `.gamestory` JSON file (schema version field for forward compatibility)
-- [ ] Import: restore a project from a `.gamestory` file, handling schema version mismatches gracefully
+- [x] `Project` domain entity (id, name, description, createdAt, updatedAt)
+- [x] `projects` Drift table + DAO (DB migration v5); all existing tables gain a `projectId` foreign key
+- [x] Projects screen: list, create, rename, delete projects
+- [x] Active-project context propagated app-wide via a `currentProjectProvider`
+- [x] Per-project export: save the whole project as a versioned `.gsp` file (JSON-based, with schema version field for forward compatibility) — see [docs/gsp-format.md](docs/gsp-format.md)
+- [x] Import: restore a project from a `.gsp` file, handling schema version mismatches gracefully
 
 ### M11 — Account Support: Auth *(stretch)*
 Add optional user accounts backed by a remote auth provider (e.g. Firebase Auth). The feature is **disabled by default** and toggled on via a compile-time env flag (`ENABLE_AUTH=true`). When disabled, no auth UI or dependencies are loaded. The app remains **fully functional offline** regardless of flag value.

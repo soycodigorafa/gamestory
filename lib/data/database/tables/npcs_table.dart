@@ -5,6 +5,7 @@ class NpcsTable extends Table {
   String get tableName => 'npcs';
 
   TextColumn get id => text()();
+  TextColumn get projectId => text().withDefault(const Constant(''))();
   TextColumn get name => text()();
   TextColumn get description => text().withDefault(const Constant(''))();
   RealColumn get canvasX => real().withDefault(const Constant(0.0))();

@@ -33,29 +33,6 @@ class AboutScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 24),
           _SectionLabel(label: 'Appearance', mutedColor: mutedColor),
-          const SizedBox(height: 8),
-          _SettingsCard(
-            surfaceVariant: surfaceVariant,
-            surface: surface,
-            child: SwitchListTile(
-              value: isDark,
-              onChanged: (_) =>
-                  ref.read(themeModeNotifierProvider.notifier).toggle(),
-              secondary: Icon(
-                isDark ? Icons.nightlight_round : Icons.wb_sunny_outlined,
-                color: primary,
-              ),
-              title: Text(
-                'Dark mode',
-                style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-              ),
-              subtitle: Text(
-                isDark ? 'Currently using dark theme' : 'Currently using light theme',
-                style: TextStyle(color: mutedColor, fontSize: 12),
-              ),
-              activeThumbColor: primary,
-            ),
-          ),
           const SizedBox(height: 24),
           _SectionLabel(label: 'Platform support', mutedColor: mutedColor),
           const SizedBox(height: 8),

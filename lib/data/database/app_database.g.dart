@@ -3,6 +3,370 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
+class $ProjectsTableTable extends ProjectsTable
+    with TableInfo<$ProjectsTableTable, ProjectsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjectsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    description,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'projects';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProjectsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProjectsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProjectsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProjectsTableTable createAlias(String alias) {
+    return $ProjectsTableTable(attachedDatabase, alias);
+  }
+}
+
+class ProjectsTableData extends DataClass
+    implements Insertable<ProjectsTableData> {
+  final String id;
+  final String name;
+  final String description;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ProjectsTableData({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ProjectsTableCompanion toCompanion(bool nullToAbsent) {
+    return ProjectsTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ProjectsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProjectsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ProjectsTableData copyWith({
+    String? id,
+    String? name,
+    String? description,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ProjectsTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ProjectsTableData copyWithCompanion(ProjectsTableCompanion data) {
+    return ProjectsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectsTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProjectsTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ProjectsTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProjectsTableCompanion.insert({
+    required String id,
+    required String name,
+    this.description = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ProjectsTableData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProjectsTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? description,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ProjectsTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $NpcsTableTable extends NpcsTable
     with TableInfo<$NpcsTableTable, NpcsTableData> {
   @override
@@ -17,6 +381,18 @@ class $NpcsTableTable extends NpcsTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -100,6 +476,7 @@ class $NpcsTableTable extends NpcsTable
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    projectId,
     name,
     description,
     canvasX,
@@ -124,6 +501,12 @@ class $NpcsTableTable extends NpcsTable
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -189,6 +572,10 @@ class $NpcsTableTable extends NpcsTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -228,6 +615,7 @@ class $NpcsTableTable extends NpcsTable
 
 class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
   final String id;
+  final String projectId;
   final String name;
   final String description;
   final double canvasX;
@@ -237,6 +625,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
   final DateTime updatedAt;
   const NpcsTableData({
     required this.id,
+    required this.projectId,
     required this.name,
     required this.description,
     required this.canvasX,
@@ -249,6 +638,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
     map['canvas_x'] = Variable<double>(canvasX);
@@ -262,6 +652,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
   NpcsTableCompanion toCompanion(bool nullToAbsent) {
     return NpcsTableCompanion(
       id: Value(id),
+      projectId: Value(projectId),
       name: Value(name),
       description: Value(description),
       canvasX: Value(canvasX),
@@ -279,6 +670,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return NpcsTableData(
       id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
       canvasX: serializer.fromJson<double>(json['canvasX']),
@@ -293,6 +685,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
       'canvasX': serializer.toJson<double>(canvasX),
@@ -305,6 +698,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
 
   NpcsTableData copyWith({
     String? id,
+    String? projectId,
     String? name,
     String? description,
     double? canvasX,
@@ -314,6 +708,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
     DateTime? updatedAt,
   }) => NpcsTableData(
     id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
     name: name ?? this.name,
     description: description ?? this.description,
     canvasX: canvasX ?? this.canvasX,
@@ -325,6 +720,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
   NpcsTableData copyWithCompanion(NpcsTableCompanion data) {
     return NpcsTableData(
       id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
       name: data.name.present ? data.name.value : this.name,
       description: data.description.present
           ? data.description.value
@@ -341,6 +737,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
   String toString() {
     return (StringBuffer('NpcsTableData(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('canvasX: $canvasX, ')
@@ -355,6 +752,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
   @override
   int get hashCode => Object.hash(
     id,
+    projectId,
     name,
     description,
     canvasX,
@@ -368,6 +766,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
       identical(this, other) ||
       (other is NpcsTableData &&
           other.id == this.id &&
+          other.projectId == this.projectId &&
           other.name == this.name &&
           other.description == this.description &&
           other.canvasX == this.canvasX &&
@@ -379,6 +778,7 @@ class NpcsTableData extends DataClass implements Insertable<NpcsTableData> {
 
 class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
   final Value<String> id;
+  final Value<String> projectId;
   final Value<String> name;
   final Value<String> description;
   final Value<double> canvasX;
@@ -389,6 +789,7 @@ class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
   final Value<int> rowid;
   const NpcsTableCompanion({
     this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.canvasX = const Value.absent(),
@@ -400,6 +801,7 @@ class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
   });
   NpcsTableCompanion.insert({
     required String id,
+    this.projectId = const Value.absent(),
     required String name,
     this.description = const Value.absent(),
     this.canvasX = const Value.absent(),
@@ -414,6 +816,7 @@ class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
        updatedAt = Value(updatedAt);
   static Insertable<NpcsTableData> custom({
     Expression<String>? id,
+    Expression<String>? projectId,
     Expression<String>? name,
     Expression<String>? description,
     Expression<double>? canvasX,
@@ -425,6 +828,7 @@ class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (canvasX != null) 'canvas_x': canvasX,
@@ -438,6 +842,7 @@ class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
 
   NpcsTableCompanion copyWith({
     Value<String>? id,
+    Value<String>? projectId,
     Value<String>? name,
     Value<String>? description,
     Value<double>? canvasX,
@@ -449,6 +854,7 @@ class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
   }) {
     return NpcsTableCompanion(
       id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
       name: name ?? this.name,
       description: description ?? this.description,
       canvasX: canvasX ?? this.canvasX,
@@ -465,6 +871,9 @@ class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -497,6 +906,7 @@ class NpcsTableCompanion extends UpdateCompanion<NpcsTableData> {
   String toString() {
     return (StringBuffer('NpcsTableCompanion(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('canvasX: $canvasX, ')
@@ -524,6 +934,18 @@ class $DialogueNodesTableTable extends DialogueNodesTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
   );
   static const VerificationMeta _npcIdMeta = const VerificationMeta('npcId');
   @override
@@ -600,6 +1022,7 @@ class $DialogueNodesTableTable extends DialogueNodesTable
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    projectId,
     npcId,
     speakerName,
     dialogueText,
@@ -623,6 +1046,12 @@ class $DialogueNodesTableTable extends DialogueNodesTable
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
     }
     if (data.containsKey('npc_id')) {
       context.handle(
@@ -681,6 +1110,10 @@ class $DialogueNodesTableTable extends DialogueNodesTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
       npcId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}npc_id'],
@@ -717,6 +1150,7 @@ class $DialogueNodesTableTable extends DialogueNodesTable
 class DialogueNodesTableData extends DataClass
     implements Insertable<DialogueNodesTableData> {
   final String id;
+  final String projectId;
   final String npcId;
   final String speakerName;
   final String dialogueText;
@@ -725,6 +1159,7 @@ class DialogueNodesTableData extends DataClass
   final double layoutY;
   const DialogueNodesTableData({
     required this.id,
+    required this.projectId,
     required this.npcId,
     required this.speakerName,
     required this.dialogueText,
@@ -736,6 +1171,7 @@ class DialogueNodesTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
     map['npc_id'] = Variable<String>(npcId);
     map['speaker_name'] = Variable<String>(speakerName);
     map['dialogue_text'] = Variable<String>(dialogueText);
@@ -748,6 +1184,7 @@ class DialogueNodesTableData extends DataClass
   DialogueNodesTableCompanion toCompanion(bool nullToAbsent) {
     return DialogueNodesTableCompanion(
       id: Value(id),
+      projectId: Value(projectId),
       npcId: Value(npcId),
       speakerName: Value(speakerName),
       dialogueText: Value(dialogueText),
@@ -764,6 +1201,7 @@ class DialogueNodesTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DialogueNodesTableData(
       id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
       npcId: serializer.fromJson<String>(json['npcId']),
       speakerName: serializer.fromJson<String>(json['speakerName']),
       dialogueText: serializer.fromJson<String>(json['dialogueText']),
@@ -777,6 +1215,7 @@ class DialogueNodesTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
       'npcId': serializer.toJson<String>(npcId),
       'speakerName': serializer.toJson<String>(speakerName),
       'dialogueText': serializer.toJson<String>(dialogueText),
@@ -788,6 +1227,7 @@ class DialogueNodesTableData extends DataClass
 
   DialogueNodesTableData copyWith({
     String? id,
+    String? projectId,
     String? npcId,
     String? speakerName,
     String? dialogueText,
@@ -796,6 +1236,7 @@ class DialogueNodesTableData extends DataClass
     double? layoutY,
   }) => DialogueNodesTableData(
     id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
     npcId: npcId ?? this.npcId,
     speakerName: speakerName ?? this.speakerName,
     dialogueText: dialogueText ?? this.dialogueText,
@@ -806,6 +1247,7 @@ class DialogueNodesTableData extends DataClass
   DialogueNodesTableData copyWithCompanion(DialogueNodesTableCompanion data) {
     return DialogueNodesTableData(
       id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
       npcId: data.npcId.present ? data.npcId.value : this.npcId,
       speakerName: data.speakerName.present
           ? data.speakerName.value
@@ -823,6 +1265,7 @@ class DialogueNodesTableData extends DataClass
   String toString() {
     return (StringBuffer('DialogueNodesTableData(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('npcId: $npcId, ')
           ..write('speakerName: $speakerName, ')
           ..write('dialogueText: $dialogueText, ')
@@ -836,6 +1279,7 @@ class DialogueNodesTableData extends DataClass
   @override
   int get hashCode => Object.hash(
     id,
+    projectId,
     npcId,
     speakerName,
     dialogueText,
@@ -848,6 +1292,7 @@ class DialogueNodesTableData extends DataClass
       identical(this, other) ||
       (other is DialogueNodesTableData &&
           other.id == this.id &&
+          other.projectId == this.projectId &&
           other.npcId == this.npcId &&
           other.speakerName == this.speakerName &&
           other.dialogueText == this.dialogueText &&
@@ -859,6 +1304,7 @@ class DialogueNodesTableData extends DataClass
 class DialogueNodesTableCompanion
     extends UpdateCompanion<DialogueNodesTableData> {
   final Value<String> id;
+  final Value<String> projectId;
   final Value<String> npcId;
   final Value<String> speakerName;
   final Value<String> dialogueText;
@@ -868,6 +1314,7 @@ class DialogueNodesTableCompanion
   final Value<int> rowid;
   const DialogueNodesTableCompanion({
     this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
     this.npcId = const Value.absent(),
     this.speakerName = const Value.absent(),
     this.dialogueText = const Value.absent(),
@@ -878,6 +1325,7 @@ class DialogueNodesTableCompanion
   });
   DialogueNodesTableCompanion.insert({
     required String id,
+    this.projectId = const Value.absent(),
     required String npcId,
     this.speakerName = const Value.absent(),
     this.dialogueText = const Value.absent(),
@@ -889,6 +1337,7 @@ class DialogueNodesTableCompanion
        npcId = Value(npcId);
   static Insertable<DialogueNodesTableData> custom({
     Expression<String>? id,
+    Expression<String>? projectId,
     Expression<String>? npcId,
     Expression<String>? speakerName,
     Expression<String>? dialogueText,
@@ -899,6 +1348,7 @@ class DialogueNodesTableCompanion
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
       if (npcId != null) 'npc_id': npcId,
       if (speakerName != null) 'speaker_name': speakerName,
       if (dialogueText != null) 'dialogue_text': dialogueText,
@@ -911,6 +1361,7 @@ class DialogueNodesTableCompanion
 
   DialogueNodesTableCompanion copyWith({
     Value<String>? id,
+    Value<String>? projectId,
     Value<String>? npcId,
     Value<String>? speakerName,
     Value<String>? dialogueText,
@@ -921,6 +1372,7 @@ class DialogueNodesTableCompanion
   }) {
     return DialogueNodesTableCompanion(
       id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
       npcId: npcId ?? this.npcId,
       speakerName: speakerName ?? this.speakerName,
       dialogueText: dialogueText ?? this.dialogueText,
@@ -936,6 +1388,9 @@ class DialogueNodesTableCompanion
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
     }
     if (npcId.present) {
       map['npc_id'] = Variable<String>(npcId.value);
@@ -965,6 +1420,7 @@ class DialogueNodesTableCompanion
   String toString() {
     return (StringBuffer('DialogueNodesTableCompanion(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('npcId: $npcId, ')
           ..write('speakerName: $speakerName, ')
           ..write('dialogueText: $dialogueText, ')
@@ -991,6 +1447,18 @@ class $DialogueChoicesTableTable extends DialogueChoicesTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
   );
   static const VerificationMeta _fromNodeIdMeta = const VerificationMeta(
     'fromNodeId',
@@ -1041,6 +1509,7 @@ class $DialogueChoicesTableTable extends DialogueChoicesTable
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    projectId,
     fromNodeId,
     toNodeId,
     choiceText,
@@ -1062,6 +1531,12 @@ class $DialogueChoicesTableTable extends DialogueChoicesTable
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
     }
     if (data.containsKey('from_node_id')) {
       context.handle(
@@ -1108,6 +1583,10 @@ class $DialogueChoicesTableTable extends DialogueChoicesTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
       fromNodeId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}from_node_id'],
@@ -1136,12 +1615,14 @@ class $DialogueChoicesTableTable extends DialogueChoicesTable
 class DialogueChoicesTableData extends DataClass
     implements Insertable<DialogueChoicesTableData> {
   final String id;
+  final String projectId;
   final String fromNodeId;
   final String? toNodeId;
   final String choiceText;
   final int sortOrder;
   const DialogueChoicesTableData({
     required this.id,
+    required this.projectId,
     required this.fromNodeId,
     this.toNodeId,
     required this.choiceText,
@@ -1151,6 +1632,7 @@ class DialogueChoicesTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
     map['from_node_id'] = Variable<String>(fromNodeId);
     if (!nullToAbsent || toNodeId != null) {
       map['to_node_id'] = Variable<String>(toNodeId);
@@ -1163,6 +1645,7 @@ class DialogueChoicesTableData extends DataClass
   DialogueChoicesTableCompanion toCompanion(bool nullToAbsent) {
     return DialogueChoicesTableCompanion(
       id: Value(id),
+      projectId: Value(projectId),
       fromNodeId: Value(fromNodeId),
       toNodeId: toNodeId == null && nullToAbsent
           ? const Value.absent()
@@ -1179,6 +1662,7 @@ class DialogueChoicesTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DialogueChoicesTableData(
       id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
       fromNodeId: serializer.fromJson<String>(json['fromNodeId']),
       toNodeId: serializer.fromJson<String?>(json['toNodeId']),
       choiceText: serializer.fromJson<String>(json['choiceText']),
@@ -1190,6 +1674,7 @@ class DialogueChoicesTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
       'fromNodeId': serializer.toJson<String>(fromNodeId),
       'toNodeId': serializer.toJson<String?>(toNodeId),
       'choiceText': serializer.toJson<String>(choiceText),
@@ -1199,12 +1684,14 @@ class DialogueChoicesTableData extends DataClass
 
   DialogueChoicesTableData copyWith({
     String? id,
+    String? projectId,
     String? fromNodeId,
     Value<String?> toNodeId = const Value.absent(),
     String? choiceText,
     int? sortOrder,
   }) => DialogueChoicesTableData(
     id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
     fromNodeId: fromNodeId ?? this.fromNodeId,
     toNodeId: toNodeId.present ? toNodeId.value : this.toNodeId,
     choiceText: choiceText ?? this.choiceText,
@@ -1215,6 +1702,7 @@ class DialogueChoicesTableData extends DataClass
   ) {
     return DialogueChoicesTableData(
       id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
       fromNodeId: data.fromNodeId.present
           ? data.fromNodeId.value
           : this.fromNodeId,
@@ -1230,6 +1718,7 @@ class DialogueChoicesTableData extends DataClass
   String toString() {
     return (StringBuffer('DialogueChoicesTableData(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('fromNodeId: $fromNodeId, ')
           ..write('toNodeId: $toNodeId, ')
           ..write('choiceText: $choiceText, ')
@@ -1240,12 +1729,13 @@ class DialogueChoicesTableData extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, fromNodeId, toNodeId, choiceText, sortOrder);
+      Object.hash(id, projectId, fromNodeId, toNodeId, choiceText, sortOrder);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DialogueChoicesTableData &&
           other.id == this.id &&
+          other.projectId == this.projectId &&
           other.fromNodeId == this.fromNodeId &&
           other.toNodeId == this.toNodeId &&
           other.choiceText == this.choiceText &&
@@ -1255,6 +1745,7 @@ class DialogueChoicesTableData extends DataClass
 class DialogueChoicesTableCompanion
     extends UpdateCompanion<DialogueChoicesTableData> {
   final Value<String> id;
+  final Value<String> projectId;
   final Value<String> fromNodeId;
   final Value<String?> toNodeId;
   final Value<String> choiceText;
@@ -1262,6 +1753,7 @@ class DialogueChoicesTableCompanion
   final Value<int> rowid;
   const DialogueChoicesTableCompanion({
     this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
     this.fromNodeId = const Value.absent(),
     this.toNodeId = const Value.absent(),
     this.choiceText = const Value.absent(),
@@ -1270,6 +1762,7 @@ class DialogueChoicesTableCompanion
   });
   DialogueChoicesTableCompanion.insert({
     required String id,
+    this.projectId = const Value.absent(),
     required String fromNodeId,
     this.toNodeId = const Value.absent(),
     this.choiceText = const Value.absent(),
@@ -1279,6 +1772,7 @@ class DialogueChoicesTableCompanion
        fromNodeId = Value(fromNodeId);
   static Insertable<DialogueChoicesTableData> custom({
     Expression<String>? id,
+    Expression<String>? projectId,
     Expression<String>? fromNodeId,
     Expression<String>? toNodeId,
     Expression<String>? choiceText,
@@ -1287,6 +1781,7 @@ class DialogueChoicesTableCompanion
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
       if (fromNodeId != null) 'from_node_id': fromNodeId,
       if (toNodeId != null) 'to_node_id': toNodeId,
       if (choiceText != null) 'choice_text': choiceText,
@@ -1297,6 +1792,7 @@ class DialogueChoicesTableCompanion
 
   DialogueChoicesTableCompanion copyWith({
     Value<String>? id,
+    Value<String>? projectId,
     Value<String>? fromNodeId,
     Value<String?>? toNodeId,
     Value<String>? choiceText,
@@ -1305,6 +1801,7 @@ class DialogueChoicesTableCompanion
   }) {
     return DialogueChoicesTableCompanion(
       id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
       fromNodeId: fromNodeId ?? this.fromNodeId,
       toNodeId: toNodeId ?? this.toNodeId,
       choiceText: choiceText ?? this.choiceText,
@@ -1318,6 +1815,9 @@ class DialogueChoicesTableCompanion
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
     }
     if (fromNodeId.present) {
       map['from_node_id'] = Variable<String>(fromNodeId.value);
@@ -1341,6 +1841,7 @@ class DialogueChoicesTableCompanion
   String toString() {
     return (StringBuffer('DialogueChoicesTableCompanion(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('fromNodeId: $fromNodeId, ')
           ..write('toNodeId: $toNodeId, ')
           ..write('choiceText: $choiceText, ')
@@ -1365,6 +1866,18 @@ class $RequirementFlagsTableTable extends RequirementFlagsTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
   );
   static const VerificationMeta _choiceIdMeta = const VerificationMeta(
     'choiceId',
@@ -1404,7 +1917,13 @@ class $RequirementFlagsTableTable extends RequirementFlagsTable
     defaultValue: const Constant(true),
   );
   @override
-  List<GeneratedColumn> get $columns => [id, choiceId, flagName, requiredValue];
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    choiceId,
+    flagName,
+    requiredValue,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1421,6 +1940,12 @@ class $RequirementFlagsTableTable extends RequirementFlagsTable
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
     }
     if (data.containsKey('choice_id')) {
       context.handle(
@@ -1463,6 +1988,10 @@ class $RequirementFlagsTableTable extends RequirementFlagsTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
       choiceId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}choice_id'],
@@ -1487,11 +2016,13 @@ class $RequirementFlagsTableTable extends RequirementFlagsTable
 class RequirementFlagsTableData extends DataClass
     implements Insertable<RequirementFlagsTableData> {
   final String id;
+  final String projectId;
   final String choiceId;
   final String flagName;
   final bool requiredValue;
   const RequirementFlagsTableData({
     required this.id,
+    required this.projectId,
     required this.choiceId,
     required this.flagName,
     required this.requiredValue,
@@ -1500,6 +2031,7 @@ class RequirementFlagsTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
     map['choice_id'] = Variable<String>(choiceId);
     map['flag_name'] = Variable<String>(flagName);
     map['required_value'] = Variable<bool>(requiredValue);
@@ -1509,6 +2041,7 @@ class RequirementFlagsTableData extends DataClass
   RequirementFlagsTableCompanion toCompanion(bool nullToAbsent) {
     return RequirementFlagsTableCompanion(
       id: Value(id),
+      projectId: Value(projectId),
       choiceId: Value(choiceId),
       flagName: Value(flagName),
       requiredValue: Value(requiredValue),
@@ -1522,6 +2055,7 @@ class RequirementFlagsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RequirementFlagsTableData(
       id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
       choiceId: serializer.fromJson<String>(json['choiceId']),
       flagName: serializer.fromJson<String>(json['flagName']),
       requiredValue: serializer.fromJson<bool>(json['requiredValue']),
@@ -1532,6 +2066,7 @@ class RequirementFlagsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
       'choiceId': serializer.toJson<String>(choiceId),
       'flagName': serializer.toJson<String>(flagName),
       'requiredValue': serializer.toJson<bool>(requiredValue),
@@ -1540,11 +2075,13 @@ class RequirementFlagsTableData extends DataClass
 
   RequirementFlagsTableData copyWith({
     String? id,
+    String? projectId,
     String? choiceId,
     String? flagName,
     bool? requiredValue,
   }) => RequirementFlagsTableData(
     id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
     choiceId: choiceId ?? this.choiceId,
     flagName: flagName ?? this.flagName,
     requiredValue: requiredValue ?? this.requiredValue,
@@ -1554,6 +2091,7 @@ class RequirementFlagsTableData extends DataClass
   ) {
     return RequirementFlagsTableData(
       id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
       choiceId: data.choiceId.present ? data.choiceId.value : this.choiceId,
       flagName: data.flagName.present ? data.flagName.value : this.flagName,
       requiredValue: data.requiredValue.present
@@ -1566,6 +2104,7 @@ class RequirementFlagsTableData extends DataClass
   String toString() {
     return (StringBuffer('RequirementFlagsTableData(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('choiceId: $choiceId, ')
           ..write('flagName: $flagName, ')
           ..write('requiredValue: $requiredValue')
@@ -1574,12 +2113,14 @@ class RequirementFlagsTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, choiceId, flagName, requiredValue);
+  int get hashCode =>
+      Object.hash(id, projectId, choiceId, flagName, requiredValue);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RequirementFlagsTableData &&
           other.id == this.id &&
+          other.projectId == this.projectId &&
           other.choiceId == this.choiceId &&
           other.flagName == this.flagName &&
           other.requiredValue == this.requiredValue);
@@ -1588,12 +2129,14 @@ class RequirementFlagsTableData extends DataClass
 class RequirementFlagsTableCompanion
     extends UpdateCompanion<RequirementFlagsTableData> {
   final Value<String> id;
+  final Value<String> projectId;
   final Value<String> choiceId;
   final Value<String> flagName;
   final Value<bool> requiredValue;
   final Value<int> rowid;
   const RequirementFlagsTableCompanion({
     this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
     this.choiceId = const Value.absent(),
     this.flagName = const Value.absent(),
     this.requiredValue = const Value.absent(),
@@ -1601,6 +2144,7 @@ class RequirementFlagsTableCompanion
   });
   RequirementFlagsTableCompanion.insert({
     required String id,
+    this.projectId = const Value.absent(),
     required String choiceId,
     required String flagName,
     this.requiredValue = const Value.absent(),
@@ -1610,6 +2154,7 @@ class RequirementFlagsTableCompanion
        flagName = Value(flagName);
   static Insertable<RequirementFlagsTableData> custom({
     Expression<String>? id,
+    Expression<String>? projectId,
     Expression<String>? choiceId,
     Expression<String>? flagName,
     Expression<bool>? requiredValue,
@@ -1617,6 +2162,7 @@ class RequirementFlagsTableCompanion
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
       if (choiceId != null) 'choice_id': choiceId,
       if (flagName != null) 'flag_name': flagName,
       if (requiredValue != null) 'required_value': requiredValue,
@@ -1626,6 +2172,7 @@ class RequirementFlagsTableCompanion
 
   RequirementFlagsTableCompanion copyWith({
     Value<String>? id,
+    Value<String>? projectId,
     Value<String>? choiceId,
     Value<String>? flagName,
     Value<bool>? requiredValue,
@@ -1633,6 +2180,7 @@ class RequirementFlagsTableCompanion
   }) {
     return RequirementFlagsTableCompanion(
       id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
       choiceId: choiceId ?? this.choiceId,
       flagName: flagName ?? this.flagName,
       requiredValue: requiredValue ?? this.requiredValue,
@@ -1645,6 +2193,9 @@ class RequirementFlagsTableCompanion
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
     }
     if (choiceId.present) {
       map['choice_id'] = Variable<String>(choiceId.value);
@@ -1665,6 +2216,7 @@ class RequirementFlagsTableCompanion
   String toString() {
     return (StringBuffer('RequirementFlagsTableCompanion(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('choiceId: $choiceId, ')
           ..write('flagName: $flagName, ')
           ..write('requiredValue: $requiredValue, ')
@@ -1688,6 +2240,18 @@ class $RewardFlagsTableTable extends RewardFlagsTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
   );
   static const VerificationMeta _nodeIdMeta = const VerificationMeta('nodeId');
   @override
@@ -1725,7 +2289,13 @@ class $RewardFlagsTableTable extends RewardFlagsTable
     defaultValue: const Constant(true),
   );
   @override
-  List<GeneratedColumn> get $columns => [id, nodeId, flagName, setValue];
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    nodeId,
+    flagName,
+    setValue,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1742,6 +2312,12 @@ class $RewardFlagsTableTable extends RewardFlagsTable
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
     }
     if (data.containsKey('node_id')) {
       context.handle(
@@ -1778,6 +2354,10 @@ class $RewardFlagsTableTable extends RewardFlagsTable
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
       nodeId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}node_id'],
@@ -1802,11 +2382,13 @@ class $RewardFlagsTableTable extends RewardFlagsTable
 class RewardFlagsTableData extends DataClass
     implements Insertable<RewardFlagsTableData> {
   final String id;
+  final String projectId;
   final String nodeId;
   final String flagName;
   final bool setValue;
   const RewardFlagsTableData({
     required this.id,
+    required this.projectId,
     required this.nodeId,
     required this.flagName,
     required this.setValue,
@@ -1815,6 +2397,7 @@ class RewardFlagsTableData extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
     map['node_id'] = Variable<String>(nodeId);
     map['flag_name'] = Variable<String>(flagName);
     map['set_value'] = Variable<bool>(setValue);
@@ -1824,6 +2407,7 @@ class RewardFlagsTableData extends DataClass
   RewardFlagsTableCompanion toCompanion(bool nullToAbsent) {
     return RewardFlagsTableCompanion(
       id: Value(id),
+      projectId: Value(projectId),
       nodeId: Value(nodeId),
       flagName: Value(flagName),
       setValue: Value(setValue),
@@ -1837,6 +2421,7 @@ class RewardFlagsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RewardFlagsTableData(
       id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
       nodeId: serializer.fromJson<String>(json['nodeId']),
       flagName: serializer.fromJson<String>(json['flagName']),
       setValue: serializer.fromJson<bool>(json['setValue']),
@@ -1847,6 +2432,7 @@ class RewardFlagsTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
       'nodeId': serializer.toJson<String>(nodeId),
       'flagName': serializer.toJson<String>(flagName),
       'setValue': serializer.toJson<bool>(setValue),
@@ -1855,11 +2441,13 @@ class RewardFlagsTableData extends DataClass
 
   RewardFlagsTableData copyWith({
     String? id,
+    String? projectId,
     String? nodeId,
     String? flagName,
     bool? setValue,
   }) => RewardFlagsTableData(
     id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
     nodeId: nodeId ?? this.nodeId,
     flagName: flagName ?? this.flagName,
     setValue: setValue ?? this.setValue,
@@ -1867,6 +2455,7 @@ class RewardFlagsTableData extends DataClass
   RewardFlagsTableData copyWithCompanion(RewardFlagsTableCompanion data) {
     return RewardFlagsTableData(
       id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
       nodeId: data.nodeId.present ? data.nodeId.value : this.nodeId,
       flagName: data.flagName.present ? data.flagName.value : this.flagName,
       setValue: data.setValue.present ? data.setValue.value : this.setValue,
@@ -1877,6 +2466,7 @@ class RewardFlagsTableData extends DataClass
   String toString() {
     return (StringBuffer('RewardFlagsTableData(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('nodeId: $nodeId, ')
           ..write('flagName: $flagName, ')
           ..write('setValue: $setValue')
@@ -1885,12 +2475,13 @@ class RewardFlagsTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, nodeId, flagName, setValue);
+  int get hashCode => Object.hash(id, projectId, nodeId, flagName, setValue);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RewardFlagsTableData &&
           other.id == this.id &&
+          other.projectId == this.projectId &&
           other.nodeId == this.nodeId &&
           other.flagName == this.flagName &&
           other.setValue == this.setValue);
@@ -1898,12 +2489,14 @@ class RewardFlagsTableData extends DataClass
 
 class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
   final Value<String> id;
+  final Value<String> projectId;
   final Value<String> nodeId;
   final Value<String> flagName;
   final Value<bool> setValue;
   final Value<int> rowid;
   const RewardFlagsTableCompanion({
     this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
     this.nodeId = const Value.absent(),
     this.flagName = const Value.absent(),
     this.setValue = const Value.absent(),
@@ -1911,6 +2504,7 @@ class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
   });
   RewardFlagsTableCompanion.insert({
     required String id,
+    this.projectId = const Value.absent(),
     required String nodeId,
     required String flagName,
     this.setValue = const Value.absent(),
@@ -1920,6 +2514,7 @@ class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
        flagName = Value(flagName);
   static Insertable<RewardFlagsTableData> custom({
     Expression<String>? id,
+    Expression<String>? projectId,
     Expression<String>? nodeId,
     Expression<String>? flagName,
     Expression<bool>? setValue,
@@ -1927,6 +2522,7 @@ class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
       if (nodeId != null) 'node_id': nodeId,
       if (flagName != null) 'flag_name': flagName,
       if (setValue != null) 'set_value': setValue,
@@ -1936,6 +2532,7 @@ class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
 
   RewardFlagsTableCompanion copyWith({
     Value<String>? id,
+    Value<String>? projectId,
     Value<String>? nodeId,
     Value<String>? flagName,
     Value<bool>? setValue,
@@ -1943,6 +2540,7 @@ class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
   }) {
     return RewardFlagsTableCompanion(
       id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
       nodeId: nodeId ?? this.nodeId,
       flagName: flagName ?? this.flagName,
       setValue: setValue ?? this.setValue,
@@ -1955,6 +2553,9 @@ class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
     }
     if (nodeId.present) {
       map['node_id'] = Variable<String>(nodeId.value);
@@ -1975,6 +2576,7 @@ class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
   String toString() {
     return (StringBuffer('RewardFlagsTableCompanion(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('nodeId: $nodeId, ')
           ..write('flagName: $flagName, ')
           ..write('setValue: $setValue, ')
@@ -1987,6 +2589,7 @@ class RewardFlagsTableCompanion extends UpdateCompanion<RewardFlagsTableData> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $ProjectsTableTable projectsTable = $ProjectsTableTable(this);
   late final $NpcsTableTable npcsTable = $NpcsTableTable(this);
   late final $DialogueNodesTableTable dialogueNodesTable =
       $DialogueNodesTableTable(this);
@@ -1997,6 +2600,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RewardFlagsTableTable rewardFlagsTable = $RewardFlagsTableTable(
     this,
   );
+  late final ProjectDao projectDao = ProjectDao(this as AppDatabase);
   late final NpcDao npcDao = NpcDao(this as AppDatabase);
   late final DialogueNodeDao dialogueNodeDao = DialogueNodeDao(
     this as AppDatabase,
@@ -2013,6 +2617,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+    projectsTable,
     npcsTable,
     dialogueNodesTable,
     dialogueChoicesTable,
@@ -2021,9 +2626,216 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   ];
 }
 
+typedef $$ProjectsTableTableCreateCompanionBuilder =
+    ProjectsTableCompanion Function({
+      required String id,
+      required String name,
+      Value<String> description,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ProjectsTableTableUpdateCompanionBuilder =
+    ProjectsTableCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> description,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ProjectsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ProjectsTableTable> {
+  $$ProjectsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProjectsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProjectsTableTable> {
+  $$ProjectsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProjectsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProjectsTableTable> {
+  $$ProjectsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ProjectsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProjectsTableTable,
+          ProjectsTableData,
+          $$ProjectsTableTableFilterComposer,
+          $$ProjectsTableTableOrderingComposer,
+          $$ProjectsTableTableAnnotationComposer,
+          $$ProjectsTableTableCreateCompanionBuilder,
+          $$ProjectsTableTableUpdateCompanionBuilder,
+          (
+            ProjectsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $ProjectsTableTable,
+              ProjectsTableData
+            >,
+          ),
+          ProjectsTableData,
+          PrefetchHooks Function()
+        > {
+  $$ProjectsTableTableTableManager(_$AppDatabase db, $ProjectsTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProjectsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProjectsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProjectsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProjectsTableCompanion(
+                id: id,
+                name: name,
+                description: description,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<String> description = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ProjectsTableCompanion.insert(
+                id: id,
+                name: name,
+                description: description,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProjectsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProjectsTableTable,
+      ProjectsTableData,
+      $$ProjectsTableTableFilterComposer,
+      $$ProjectsTableTableOrderingComposer,
+      $$ProjectsTableTableAnnotationComposer,
+      $$ProjectsTableTableCreateCompanionBuilder,
+      $$ProjectsTableTableUpdateCompanionBuilder,
+      (
+        ProjectsTableData,
+        BaseReferences<_$AppDatabase, $ProjectsTableTable, ProjectsTableData>,
+      ),
+      ProjectsTableData,
+      PrefetchHooks Function()
+    >;
 typedef $$NpcsTableTableCreateCompanionBuilder =
     NpcsTableCompanion Function({
       required String id,
+      Value<String> projectId,
       required String name,
       Value<String> description,
       Value<double> canvasX,
@@ -2036,6 +2848,7 @@ typedef $$NpcsTableTableCreateCompanionBuilder =
 typedef $$NpcsTableTableUpdateCompanionBuilder =
     NpcsTableCompanion Function({
       Value<String> id,
+      Value<String> projectId,
       Value<String> name,
       Value<String> description,
       Value<double> canvasX,
@@ -2057,6 +2870,11 @@ class $$NpcsTableTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2110,6 +2928,11 @@ class $$NpcsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -2157,6 +2980,9 @@ class $$NpcsTableTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -2214,6 +3040,7 @@ class $$NpcsTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<double> canvasX = const Value.absent(),
@@ -2224,6 +3051,7 @@ class $$NpcsTableTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => NpcsTableCompanion(
                 id: id,
+                projectId: projectId,
                 name: name,
                 description: description,
                 canvasX: canvasX,
@@ -2236,6 +3064,7 @@ class $$NpcsTableTableTableManager
           createCompanionCallback:
               ({
                 required String id,
+                Value<String> projectId = const Value.absent(),
                 required String name,
                 Value<String> description = const Value.absent(),
                 Value<double> canvasX = const Value.absent(),
@@ -2246,6 +3075,7 @@ class $$NpcsTableTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => NpcsTableCompanion.insert(
                 id: id,
+                projectId: projectId,
                 name: name,
                 description: description,
                 canvasX: canvasX,
@@ -2283,6 +3113,7 @@ typedef $$NpcsTableTableProcessedTableManager =
 typedef $$DialogueNodesTableTableCreateCompanionBuilder =
     DialogueNodesTableCompanion Function({
       required String id,
+      Value<String> projectId,
       required String npcId,
       Value<String> speakerName,
       Value<String> dialogueText,
@@ -2294,6 +3125,7 @@ typedef $$DialogueNodesTableTableCreateCompanionBuilder =
 typedef $$DialogueNodesTableTableUpdateCompanionBuilder =
     DialogueNodesTableCompanion Function({
       Value<String> id,
+      Value<String> projectId,
       Value<String> npcId,
       Value<String> speakerName,
       Value<String> dialogueText,
@@ -2314,6 +3146,11 @@ class $$DialogueNodesTableTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2362,6 +3199,11 @@ class $$DialogueNodesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get npcId => $composableBuilder(
     column: $table.npcId,
     builder: (column) => ColumnOrderings(column),
@@ -2404,6 +3246,9 @@ class $$DialogueNodesTableTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
 
   GeneratedColumn<String> get npcId =>
       $composableBuilder(column: $table.npcId, builder: (column) => column);
@@ -2469,6 +3314,7 @@ class $$DialogueNodesTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
                 Value<String> npcId = const Value.absent(),
                 Value<String> speakerName = const Value.absent(),
                 Value<String> dialogueText = const Value.absent(),
@@ -2478,6 +3324,7 @@ class $$DialogueNodesTableTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => DialogueNodesTableCompanion(
                 id: id,
+                projectId: projectId,
                 npcId: npcId,
                 speakerName: speakerName,
                 dialogueText: dialogueText,
@@ -2489,6 +3336,7 @@ class $$DialogueNodesTableTableTableManager
           createCompanionCallback:
               ({
                 required String id,
+                Value<String> projectId = const Value.absent(),
                 required String npcId,
                 Value<String> speakerName = const Value.absent(),
                 Value<String> dialogueText = const Value.absent(),
@@ -2498,6 +3346,7 @@ class $$DialogueNodesTableTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => DialogueNodesTableCompanion.insert(
                 id: id,
+                projectId: projectId,
                 npcId: npcId,
                 speakerName: speakerName,
                 dialogueText: dialogueText,
@@ -2538,6 +3387,7 @@ typedef $$DialogueNodesTableTableProcessedTableManager =
 typedef $$DialogueChoicesTableTableCreateCompanionBuilder =
     DialogueChoicesTableCompanion Function({
       required String id,
+      Value<String> projectId,
       required String fromNodeId,
       Value<String?> toNodeId,
       Value<String> choiceText,
@@ -2547,6 +3397,7 @@ typedef $$DialogueChoicesTableTableCreateCompanionBuilder =
 typedef $$DialogueChoicesTableTableUpdateCompanionBuilder =
     DialogueChoicesTableCompanion Function({
       Value<String> id,
+      Value<String> projectId,
       Value<String> fromNodeId,
       Value<String?> toNodeId,
       Value<String> choiceText,
@@ -2565,6 +3416,11 @@ class $$DialogueChoicesTableTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2603,6 +3459,11 @@ class $$DialogueChoicesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get fromNodeId => $composableBuilder(
     column: $table.fromNodeId,
     builder: (column) => ColumnOrderings(column),
@@ -2635,6 +3496,9 @@ class $$DialogueChoicesTableTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
 
   GeneratedColumn<String> get fromNodeId => $composableBuilder(
     column: $table.fromNodeId,
@@ -2697,6 +3561,7 @@ class $$DialogueChoicesTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
                 Value<String> fromNodeId = const Value.absent(),
                 Value<String?> toNodeId = const Value.absent(),
                 Value<String> choiceText = const Value.absent(),
@@ -2704,6 +3569,7 @@ class $$DialogueChoicesTableTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => DialogueChoicesTableCompanion(
                 id: id,
+                projectId: projectId,
                 fromNodeId: fromNodeId,
                 toNodeId: toNodeId,
                 choiceText: choiceText,
@@ -2713,6 +3579,7 @@ class $$DialogueChoicesTableTableTableManager
           createCompanionCallback:
               ({
                 required String id,
+                Value<String> projectId = const Value.absent(),
                 required String fromNodeId,
                 Value<String?> toNodeId = const Value.absent(),
                 Value<String> choiceText = const Value.absent(),
@@ -2720,6 +3587,7 @@ class $$DialogueChoicesTableTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => DialogueChoicesTableCompanion.insert(
                 id: id,
+                projectId: projectId,
                 fromNodeId: fromNodeId,
                 toNodeId: toNodeId,
                 choiceText: choiceText,
@@ -2758,6 +3626,7 @@ typedef $$DialogueChoicesTableTableProcessedTableManager =
 typedef $$RequirementFlagsTableTableCreateCompanionBuilder =
     RequirementFlagsTableCompanion Function({
       required String id,
+      Value<String> projectId,
       required String choiceId,
       required String flagName,
       Value<bool> requiredValue,
@@ -2766,6 +3635,7 @@ typedef $$RequirementFlagsTableTableCreateCompanionBuilder =
 typedef $$RequirementFlagsTableTableUpdateCompanionBuilder =
     RequirementFlagsTableCompanion Function({
       Value<String> id,
+      Value<String> projectId,
       Value<String> choiceId,
       Value<String> flagName,
       Value<bool> requiredValue,
@@ -2783,6 +3653,11 @@ class $$RequirementFlagsTableTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2816,6 +3691,11 @@ class $$RequirementFlagsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get choiceId => $composableBuilder(
     column: $table.choiceId,
     builder: (column) => ColumnOrderings(column),
@@ -2843,6 +3723,9 @@ class $$RequirementFlagsTableTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
 
   GeneratedColumn<String> get choiceId =>
       $composableBuilder(column: $table.choiceId, builder: (column) => column);
@@ -2903,12 +3786,14 @@ class $$RequirementFlagsTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
                 Value<String> choiceId = const Value.absent(),
                 Value<String> flagName = const Value.absent(),
                 Value<bool> requiredValue = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => RequirementFlagsTableCompanion(
                 id: id,
+                projectId: projectId,
                 choiceId: choiceId,
                 flagName: flagName,
                 requiredValue: requiredValue,
@@ -2917,12 +3802,14 @@ class $$RequirementFlagsTableTableTableManager
           createCompanionCallback:
               ({
                 required String id,
+                Value<String> projectId = const Value.absent(),
                 required String choiceId,
                 required String flagName,
                 Value<bool> requiredValue = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => RequirementFlagsTableCompanion.insert(
                 id: id,
+                projectId: projectId,
                 choiceId: choiceId,
                 flagName: flagName,
                 requiredValue: requiredValue,
@@ -2960,6 +3847,7 @@ typedef $$RequirementFlagsTableTableProcessedTableManager =
 typedef $$RewardFlagsTableTableCreateCompanionBuilder =
     RewardFlagsTableCompanion Function({
       required String id,
+      Value<String> projectId,
       required String nodeId,
       required String flagName,
       Value<bool> setValue,
@@ -2968,6 +3856,7 @@ typedef $$RewardFlagsTableTableCreateCompanionBuilder =
 typedef $$RewardFlagsTableTableUpdateCompanionBuilder =
     RewardFlagsTableCompanion Function({
       Value<String> id,
+      Value<String> projectId,
       Value<String> nodeId,
       Value<String> flagName,
       Value<bool> setValue,
@@ -2985,6 +3874,11 @@ class $$RewardFlagsTableTableFilterComposer
   });
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3018,6 +3912,11 @@ class $$RewardFlagsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get nodeId => $composableBuilder(
     column: $table.nodeId,
     builder: (column) => ColumnOrderings(column),
@@ -3045,6 +3944,9 @@ class $$RewardFlagsTableTableAnnotationComposer
   });
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
 
   GeneratedColumn<String> get nodeId =>
       $composableBuilder(column: $table.nodeId, builder: (column) => column);
@@ -3094,12 +3996,14 @@ class $$RewardFlagsTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
                 Value<String> nodeId = const Value.absent(),
                 Value<String> flagName = const Value.absent(),
                 Value<bool> setValue = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => RewardFlagsTableCompanion(
                 id: id,
+                projectId: projectId,
                 nodeId: nodeId,
                 flagName: flagName,
                 setValue: setValue,
@@ -3108,12 +4012,14 @@ class $$RewardFlagsTableTableTableManager
           createCompanionCallback:
               ({
                 required String id,
+                Value<String> projectId = const Value.absent(),
                 required String nodeId,
                 required String flagName,
                 Value<bool> setValue = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => RewardFlagsTableCompanion.insert(
                 id: id,
+                projectId: projectId,
                 nodeId: nodeId,
                 flagName: flagName,
                 setValue: setValue,
@@ -3152,6 +4058,8 @@ typedef $$RewardFlagsTableTableProcessedTableManager =
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
+  $$ProjectsTableTableTableManager get projectsTable =>
+      $$ProjectsTableTableTableManager(_db, _db.projectsTable);
   $$NpcsTableTableTableManager get npcsTable =>
       $$NpcsTableTableTableManager(_db, _db.npcsTable);
   $$DialogueNodesTableTableTableManager get dialogueNodesTable =>

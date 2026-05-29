@@ -45,9 +45,9 @@ class AdaptiveNavLayout extends StatelessWidget {
 
   static const _railDestinations = <NavigationRailDestination>[
     NavigationRailDestination(
-      icon: Icon(Icons.grid_view_outlined),
-      selectedIcon: Icon(Icons.grid_view_rounded),
-      label: Text('Canvas'),
+      icon: Icon(Icons.folder_outlined),
+      selectedIcon: Icon(Icons.folder_rounded),
+      label: Text('Projects'),
     ),
     NavigationRailDestination(
       icon: Icon(Icons.info_outline_rounded),
@@ -78,9 +78,9 @@ class AdaptiveNavLayout extends StatelessWidget {
           onDestinationSelected: onDestinationSelected,
           destinations: const [
             NavigationDestination(
-              icon: Icon(Icons.grid_view_outlined),
-              selectedIcon: Icon(Icons.grid_view_rounded),
-              label: 'Canvas',
+              icon: Icon(Icons.folder_outlined),
+              selectedIcon: Icon(Icons.folder_rounded),
+              label: 'Projects',
             ),
             NavigationDestination(
               icon: Icon(Icons.info_outline_rounded),

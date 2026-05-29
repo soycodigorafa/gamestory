@@ -4,6 +4,7 @@ import '../../../data/database/app_database.dart';
 import '../../../data/repositories/drift_npc_repository.dart';
 import '../../../domain/entities/npc.dart';
 import '../../../domain/repositories/npc_repository.dart';
+import '../../projects/providers/project_list_provider.dart';
 
 part 'npc_list_provider.g.dart';
 
@@ -23,7 +24,9 @@ NpcRepository npcRepository(NpcRepositoryRef ref) {
 class NpcList extends _$NpcList {
   @override
   Stream<List<Npc>> build() {
-    return ref.watch(npcRepositoryProvider).watchAll();
+    final project = ref.watch(currentProjectProvider);
+    if (project == null) return const Stream.empty();
+    return ref.watch(npcRepositoryProvider).watchByProject(project.id);
   }
 
   Future<void> createNpc(
@@ -32,9 +35,11 @@ class NpcList extends _$NpcList {
     double canvasX = 0,
     double canvasY = 0,
   }) {
+    final projectId = ref.read(currentProjectProvider)?.id ?? '';
     return ref.read(npcRepositoryProvider).create(
           CreateNpcInput(
             name: name,
+            projectId: projectId,
             description: description,
             canvasX: canvasX,
             canvasY: canvasY,

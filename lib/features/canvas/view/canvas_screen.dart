@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/npc.dart';
-import '../../../features/export/providers/import_provider.dart';
+import '../../../features/export/providers/export_provider.dart';
+import '../../../features/projects/providers/project_list_provider.dart';
 import '../../../shared/widgets/gs_animated_card.dart';
 import '../../../shared/widgets/gs_dialog.dart';
 import '../../../shared/widgets/gs_empty_state.dart';
@@ -31,15 +32,21 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
   @override
   Widget build(BuildContext context) {
     final npcAsync = ref.watch(npcListProvider);
+    final project = ref.watch(currentProjectProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GameStory'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: 'Projects',
+          onPressed: () => context.goNamed('projects'),
+        ),
+        title: Text(project?.name ?? 'Canvas'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.upload_file_outlined),
-            tooltip: 'Import NPC from JSON',
-            onPressed: () => _importNpc(context),
+            icon: const Icon(Icons.save_alt_outlined),
+            tooltip: 'Export project as .gsp',
+            onPressed: () => _exportProject(context),
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -179,27 +186,19 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
     controller.dispose();
   }
 
-  Future<void> _importNpc(BuildContext context) async {
-    final result =
-        await ref.read(importProvider.notifier).importFromFile();
+  Future<void> _exportProject(BuildContext context) async {
+    final project = ref.read(currentProjectProvider);
+    if (project == null) return;
+    await ref.read(exportProvider.notifier).exportGsp(project.id);
+    final exportState = ref.read(exportProvider);
     if (!context.mounted) return;
-    if (result != null) {
+    if (exportState.hasError) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-              'Imported "${result.npc.name}" (${result.nodeCount} nodes)'),
+          content: Text('Export failed: ${exportState.error}'),
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
-    } else {
-      final importState = ref.read(importProvider);
-      if (importState.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Import failed: ${importState.error}'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
     }
   }
 

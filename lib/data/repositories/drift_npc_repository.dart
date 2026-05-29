@@ -19,11 +19,19 @@ class DriftNpcRepository implements NpcRepository {
   }
 
   @override
+  Stream<List<Npc>> watchByProject(String projectId) {
+    return _db.npcDao.watchByProject(projectId).map(
+          (rows) => rows.map(_rowToEntity).toList(),
+        );
+  }
+
+  @override
   Future<Npc> create(CreateNpcInput input) async {
     final now = DateTime.now();
     final id = _uuid.v4();
     final companion = NpcsTableCompanion.insert(
       id: id,
+      projectId: Value(input.projectId),
       name: input.name,
       description: Value(input.description),
       canvasX: Value(input.canvasX),
@@ -35,6 +43,7 @@ class DriftNpcRepository implements NpcRepository {
     await _db.npcDao.upsert(companion);
     return Npc(
       id: id,
+      projectId: input.projectId,
       name: input.name,
       description: input.description,
       canvasX: input.canvasX,
@@ -74,6 +83,7 @@ class DriftNpcRepository implements NpcRepository {
   Npc _rowToEntity(NpcsTableData row) {
     return Npc(
       id: row.id,
+      projectId: row.projectId,
       name: row.name,
       description: row.description,
       canvasX: row.canvasX,

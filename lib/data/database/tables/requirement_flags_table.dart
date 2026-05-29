@@ -5,6 +5,7 @@ class RequirementFlagsTable extends Table {
   String get tableName => 'requirement_flags';
 
   TextColumn get id => text()();
+  TextColumn get projectId => text().withDefault(const Constant(''))();
   TextColumn get choiceId => text()();
   TextColumn get flagName => text()();
   BoolColumn get requiredValue => boolean().withDefault(const Constant(true))();

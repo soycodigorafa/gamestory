@@ -2,7 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../canvas/providers/npc_list_provider.dart';
 import '../../dialogue_editor/providers/dialogue_graph_provider.dart';
-import '../services/import_service.dart';
+import '../../projects/providers/project_list_provider.dart';
+import '../services/gsp_import_service.dart';
 
 part 'import_provider.g.dart';
 
@@ -11,11 +12,12 @@ class Import extends _$Import {
   @override
   Future<void> build() async {}
 
-  Future<ImportResult?> importFromFile() async {
+  Future<GspImportResult?> importFromFile() async {
     state = const AsyncLoading();
-    ImportResult? result;
+    GspImportResult? result;
     state = await AsyncValue.guard(() async {
-      final service = ImportService(
+      final service = GspImportService(
+        projectRepo: ref.read(projectRepositoryProvider),
         npcRepo: ref.read(npcRepositoryProvider),
         nodeRepo: ref.read(dialogueNodeRepositoryProvider),
         choiceRepo: ref.read(dialogueChoiceRepositoryProvider),

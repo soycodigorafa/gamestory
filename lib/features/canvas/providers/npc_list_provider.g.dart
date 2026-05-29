@@ -40,7 +40,7 @@ final npcRepositoryProvider = Provider<NpcRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef NpcRepositoryRef = ProviderRef<NpcRepository>;
-String _$npcListHash() => r'14562abfec27d59d0e972cafd1ee5c51392fa114';
+String _$npcListHash() => r'ffb8ec9e197788913100b3cd192b0cc8a6abd19e';
 
 /// See also [NpcList].
 @ProviderFor(NpcList)

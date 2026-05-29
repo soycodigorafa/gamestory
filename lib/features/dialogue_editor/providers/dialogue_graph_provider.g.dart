@@ -598,7 +598,7 @@ class _DialogueChoicesListProviderElement
   String get npcId => (origin as DialogueChoicesListProvider).npcId;
 }
 
-String _$dialogueGraphHash() => r'36fdf312d6c75c69b05b0e505e7bf1ae6ca9ca6a';
+String _$dialogueGraphHash() => r'0f01c69328687d3a7367063e9c08643a1dab616d';
 
 abstract class _$DialogueGraph
     extends BuildlessAutoDisposeAsyncNotifier<DialogueGraphState> {
