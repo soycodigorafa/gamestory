@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../domain/entities/reward_flag.dart';
+import '../../export/providers/project_dirty_provider.dart';
 import '../providers/dialogue_graph_provider.dart';
 
 class RewardFlagSheet extends ConsumerStatefulWidget {
@@ -226,6 +227,7 @@ class _RewardFlagSheetState extends ConsumerState<RewardFlagSheet> {
             ),
           );
       _flagNameCtrl.clear();
+      ref.read(projectDirtyProvider.notifier).markDirty();
     } finally {
       if (mounted) setState(() => _adding = false);
     }
@@ -233,6 +235,7 @@ class _RewardFlagSheetState extends ConsumerState<RewardFlagSheet> {
 
   Future<void> _deleteFlag(String flagId) async {
     await ref.read(rewardFlagRepositoryProvider).delete(flagId);
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 }
 

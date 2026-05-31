@@ -7,6 +7,7 @@ class ProjectsTable extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
   TextColumn get description => text().withDefault(const Constant(''))();
+  TextColumn get filePath => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 

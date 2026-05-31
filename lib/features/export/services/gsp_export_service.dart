@@ -41,6 +41,16 @@ class GspExportService {
     await _shareText(json, fileName);
   }
 
+  Future<void> saveToPath(
+    String path,
+    Project project,
+    List<NpcGraphData> npcsData,
+  ) async {
+    const encoder = JsonEncoder.withIndent('  ');
+    final json = encoder.convert(buildGspMap(project, npcsData));
+    await File(path).writeAsString(json, encoding: utf8);
+  }
+
   Map<String, dynamic> buildGspMap(
     Project project,
     List<NpcGraphData> npcsData,

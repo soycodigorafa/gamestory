@@ -23,7 +23,7 @@ final projectRepositoryProvider = Provider<ProjectRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ProjectRepositoryRef = ProviderRef<ProjectRepository>;
-String _$projectListHash() => r'bbff51e1f17ea5a83b75a58d857ca283b7d20acd';
+String _$projectListHash() => r'a9851a699914df2ad1a901b5263eebb380379caf';
 
 /// See also [ProjectList].
 @ProviderFor(ProjectList)
@@ -39,7 +39,7 @@ final projectListProvider =
     );
 
 typedef _$ProjectList = AutoDisposeStreamNotifier<List<Project>>;
-String _$currentProjectHash() => r'56c9007806308a01004c179fe48c7bfe2704eade';
+String _$currentProjectHash() => r'e5fd06226bc439c1966ad37d8058f62b47599a4b';
 
 /// See also [CurrentProject].
 @ProviderFor(CurrentProject)

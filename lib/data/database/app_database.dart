@@ -33,7 +33,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -75,6 +75,10 @@ class AppDatabase extends _$AppDatabase {
             await customStatement(
               'UPDATE reward_flags SET project_id = ?', [kDefaultProjectId],
             );
+          }
+          if (from < 6) {
+            // ignore: argument_type_not_assignable
+            await m.addColumn(projectsTable, projectsTable.filePath);
           }
         },
       );

@@ -4,6 +4,7 @@ import '../../../data/database/app_database.dart';
 import '../../../data/repositories/drift_npc_repository.dart';
 import '../../../domain/entities/npc.dart';
 import '../../../domain/repositories/npc_repository.dart';
+import '../../export/providers/project_dirty_provider.dart';
 import '../../projects/providers/project_list_provider.dart';
 
 part 'npc_list_provider.g.dart';
@@ -34,9 +35,9 @@ class NpcList extends _$NpcList {
     String description = '',
     double canvasX = 0,
     double canvasY = 0,
-  }) {
+  }) async {
     final projectId = ref.read(currentProjectProvider)?.id ?? '';
-    return ref.read(npcRepositoryProvider).create(
+    await ref.read(npcRepositoryProvider).create(
           CreateNpcInput(
             name: name,
             projectId: projectId,
@@ -45,21 +46,25 @@ class NpcList extends _$NpcList {
             canvasY: canvasY,
           ),
         );
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 
-  Future<void> renameNpc(String id, String name) {
-    return ref.read(npcRepositoryProvider).update(
+  Future<void> renameNpc(String id, String name) async {
+    await ref.read(npcRepositoryProvider).update(
           UpdateNpcInput(id: id, name: name),
         );
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 
-  Future<void> moveNpc(String id, double x, double y) {
-    return ref.read(npcRepositoryProvider).update(
+  Future<void> moveNpc(String id, double x, double y) async {
+    await ref.read(npcRepositoryProvider).update(
           UpdateNpcInput(id: id, canvasX: x, canvasY: y),
         );
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 
-  Future<void> deleteNpc(String id) {
-    return ref.read(npcRepositoryProvider).delete(id);
+  Future<void> deleteNpc(String id) async {
+    await ref.read(npcRepositoryProvider).delete(id);
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 }

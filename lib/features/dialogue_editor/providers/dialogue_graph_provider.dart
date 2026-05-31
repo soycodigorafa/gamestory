@@ -17,6 +17,7 @@ import '../../../domain/repositories/dialogue_node_repository.dart';
 import '../../../domain/repositories/requirement_flag_repository.dart';
 import '../../../domain/repositories/reward_flag_repository.dart';
 import '../../canvas/providers/npc_list_provider.dart';
+import '../../export/providers/project_dirty_provider.dart';
 
 part 'dialogue_graph_provider.g.dart';
 
@@ -90,7 +91,7 @@ class DialogueGraph extends _$DialogueGraph {
   }) async {
     final graph = await future;
     final isFirst = graph.nodes.isEmpty;
-    return ref.read(dialogueNodeRepositoryProvider).create(CreateNodeInput(
+    final node = await ref.read(dialogueNodeRepositoryProvider).create(CreateNodeInput(
           npcId: npcId,
           isStart: isFirst,
           layoutX: layoutX,
@@ -98,6 +99,8 @@ class DialogueGraph extends _$DialogueGraph {
           speakerName: speakerName,
           dialogueText: dialogueText,
         ));
+    ref.read(projectDirtyProvider.notifier).markDirty();
+    return node;
   }
 
   Future<void> moveNode(String nodeId, double x, double y) async {
@@ -113,10 +116,12 @@ class DialogueGraph extends _$DialogueGraph {
     await ref
         .read(dialogueNodeRepositoryProvider)
         .update(UpdateNodeInput(id: nodeId, layoutX: x, layoutY: y));
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 
-  Future<void> setStart(String nodeId) {
-    return ref.read(dialogueNodeRepositoryProvider).setStart(nodeId);
+  Future<void> setStart(String nodeId) async {
+    await ref.read(dialogueNodeRepositoryProvider).setStart(nodeId);
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 
   Future<void> deleteNode(String nodeId) async {
@@ -134,6 +139,7 @@ class DialogueGraph extends _$DialogueGraph {
     }
     await rewardFlagRepo.deleteByNodeId(nodeId);
     await ref.read(dialogueNodeRepositoryProvider).delete(nodeId);
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 
   Future<void> autoArrange() async {
@@ -200,6 +206,7 @@ class DialogueGraph extends _$DialogueGraph {
         await nodeRepo.update(UpdateNodeInput(id: nodeIds[i], layoutX: x, layoutY: y));
       }
     }
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 }
 

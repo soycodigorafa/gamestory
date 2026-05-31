@@ -5,6 +5,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../domain/entities/dialogue_choice.dart';
 import '../../../domain/entities/dialogue_node.dart';
 import '../../../shared/widgets/gs_text_field.dart';
+import '../../export/providers/project_dirty_provider.dart';
 import '../providers/dialogue_graph_provider.dart';
 import 'node_picker_modal.dart';
 import 'requirement_flag_sheet.dart';
@@ -336,6 +337,7 @@ class _NodeEditSheetState extends ConsumerState<NodeEditSheet> {
         }
       }
 
+      ref.read(projectDirtyProvider.notifier).markDirty();
       if (mounted) Navigator.of(context).pop();
     } finally {
       if (mounted) setState(() => _saving = false);

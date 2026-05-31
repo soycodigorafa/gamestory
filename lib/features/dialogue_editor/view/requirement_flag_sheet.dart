@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../domain/entities/requirement_flag.dart';
+import '../../export/providers/project_dirty_provider.dart';
 import '../providers/dialogue_graph_provider.dart';
 
 class RequirementFlagSheet extends ConsumerStatefulWidget {
@@ -229,6 +230,7 @@ class _RequirementFlagSheetState extends ConsumerState<RequirementFlagSheet> {
             ),
           );
       _flagNameCtrl.clear();
+      ref.read(projectDirtyProvider.notifier).markDirty();
     } finally {
       if (mounted) setState(() => _adding = false);
     }
@@ -236,6 +238,7 @@ class _RequirementFlagSheetState extends ConsumerState<RequirementFlagSheet> {
 
   Future<void> _deleteFlag(String flagId) async {
     await ref.read(requirementFlagRepositoryProvider).delete(flagId);
+    ref.read(projectDirtyProvider.notifier).markDirty();
   }
 }
 

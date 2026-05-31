@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/npc.dart';
+import '../../../features/export/providers/auto_save_provider.dart';
 import '../../../features/export/providers/export_provider.dart';
 import '../../../features/projects/providers/project_list_provider.dart';
 import '../../../shared/widgets/gs_animated_card.dart';
@@ -31,6 +32,18 @@ class _CanvasScreenState extends ConsumerState<CanvasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(projectAutoSaveProvider);
+    ref.listen<AsyncValue<void>>(projectAutoSaveProvider, (_, next) {
+      if (next.hasError && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Auto-save failed: ${next.error}'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    });
+
     final npcAsync = ref.watch(npcListProvider);
     final project = ref.watch(currentProjectProvider);
 

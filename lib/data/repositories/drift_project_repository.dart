@@ -25,6 +25,7 @@ class DriftProjectRepository implements ProjectRepository {
     final companion = ProjectsTableCompanion.insert(
       id: id,
       name: input.name,
+      filePath: Value(input.filePath),
       createdAt: now,
       updatedAt: now,
     );
@@ -33,6 +34,7 @@ class DriftProjectRepository implements ProjectRepository {
       id: id,
       name: input.name,
       description: input.description,
+      filePath: input.filePath,
       createdAt: now,
       updatedAt: now,
     );
@@ -49,6 +51,7 @@ class DriftProjectRepository implements ProjectRepository {
       description: input.description != null
           ? Value(input.description!)
           : const Value.absent(),
+      filePath: input.filePath != null ? Value(input.filePath) : const Value.absent(),
       updatedAt: Value(DateTime.now()),
     );
     await _db.projectDao.updateById(companion);
@@ -62,6 +65,7 @@ class DriftProjectRepository implements ProjectRepository {
       id: row.id,
       name: row.name,
       description: row.description,
+      filePath: row.filePath,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     );

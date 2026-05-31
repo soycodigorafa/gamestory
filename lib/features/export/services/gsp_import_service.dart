@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../domain/entities/dialogue_choice.dart';
 import '../../../domain/entities/dialogue_node.dart';
@@ -53,13 +55,34 @@ class GspImportService {
     final jsonString = utf8.decode(bytes);
     final map = jsonDecode(jsonString) as Map<String, dynamic>;
 
-    return _importFromMap(map);
+    final pickedPath = file.path;
+    String? resolvedPath;
+
+    if (pickedPath != null) {
+      final isMobile = Platform.isAndroid || Platform.isIOS;
+      if (isMobile) {
+        final docsDir = await getApplicationDocumentsDirectory();
+        final projectsDir = Directory('${docsDir.path}/projects');
+        await projectsDir.create(recursive: true);
+        final fileName = pickedPath.split(Platform.pathSeparator).last;
+        final destPath = '${projectsDir.path}/$fileName';
+        await File(pickedPath).copy(destPath);
+        resolvedPath = destPath;
+      } else {
+        resolvedPath = pickedPath;
+      }
+    }
+
+    return _importFromMap(map, filePath: resolvedPath);
   }
 
   Future<GspImportResult> importFromMap(Map<String, dynamic> map) =>
       _importFromMap(map);
 
-  Future<GspImportResult> _importFromMap(Map<String, dynamic> map) async {
+  Future<GspImportResult> _importFromMap(
+    Map<String, dynamic> map, {
+    String? filePath,
+  }) async {
     final schemaVersion = map['schemaVersion'] as int?;
     if (schemaVersion != 1) {
       throw FormatException(
@@ -73,6 +96,7 @@ class GspImportService {
     final project = await projectRepo.create(CreateProjectInput(
       name: projectMap['name'] as String,
       description: (projectMap['description'] as String?) ?? '',
+      filePath: filePath,
     ));
 
     for (final npcRaw in npcsRaw) {

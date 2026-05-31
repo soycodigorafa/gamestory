@@ -39,6 +39,17 @@ class $ProjectsTableTable extends ProjectsTable
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -66,6 +77,7 @@ class $ProjectsTableTable extends ProjectsTable
     id,
     name,
     description,
+    filePath,
     createdAt,
     updatedAt,
   ];
@@ -101,6 +113,12 @@ class $ProjectsTableTable extends ProjectsTable
           data['description']!,
           _descriptionMeta,
         ),
+      );
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
       );
     }
     if (data.containsKey('created_at')) {
@@ -140,6 +158,10 @@ class $ProjectsTableTable extends ProjectsTable
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -162,12 +184,14 @@ class ProjectsTableData extends DataClass
   final String id;
   final String name;
   final String description;
+  final String? filePath;
   final DateTime createdAt;
   final DateTime updatedAt;
   const ProjectsTableData({
     required this.id,
     required this.name,
     required this.description,
+    this.filePath,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -177,6 +201,9 @@ class ProjectsTableData extends DataClass
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
+    if (!nullToAbsent || filePath != null) {
+      map['file_path'] = Variable<String>(filePath);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -187,6 +214,9 @@ class ProjectsTableData extends DataClass
       id: Value(id),
       name: Value(name),
       description: Value(description),
+      filePath: filePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(filePath),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -201,6 +231,7 @@ class ProjectsTableData extends DataClass
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
+      filePath: serializer.fromJson<String?>(json['filePath']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -212,6 +243,7 @@ class ProjectsTableData extends DataClass
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
+      'filePath': serializer.toJson<String?>(filePath),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -221,12 +253,14 @@ class ProjectsTableData extends DataClass
     String? id,
     String? name,
     String? description,
+    Value<String?> filePath = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => ProjectsTableData(
     id: id ?? this.id,
     name: name ?? this.name,
     description: description ?? this.description,
+    filePath: filePath.present ? filePath.value : this.filePath,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -237,6 +271,7 @@ class ProjectsTableData extends DataClass
       description: data.description.present
           ? data.description.value
           : this.description,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -248,6 +283,7 @@ class ProjectsTableData extends DataClass
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
+          ..write('filePath: $filePath, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -255,7 +291,8 @@ class ProjectsTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, name, description, createdAt, updatedAt);
+  int get hashCode =>
+      Object.hash(id, name, description, filePath, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -263,6 +300,7 @@ class ProjectsTableData extends DataClass
           other.id == this.id &&
           other.name == this.name &&
           other.description == this.description &&
+          other.filePath == this.filePath &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -271,6 +309,7 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
   final Value<String> id;
   final Value<String> name;
   final Value<String> description;
+  final Value<String?> filePath;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -278,6 +317,7 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
+    this.filePath = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -286,6 +326,7 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
     required String id,
     required String name,
     this.description = const Value.absent(),
+    this.filePath = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -297,6 +338,7 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
     Expression<String>? id,
     Expression<String>? name,
     Expression<String>? description,
+    Expression<String>? filePath,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -305,6 +347,7 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (filePath != null) 'file_path': filePath,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -315,6 +358,7 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
     Value<String>? id,
     Value<String>? name,
     Value<String>? description,
+    Value<String?>? filePath,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -323,6 +367,7 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
+      filePath: filePath ?? this.filePath,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -340,6 +385,9 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -359,6 +407,7 @@ class ProjectsTableCompanion extends UpdateCompanion<ProjectsTableData> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
+          ..write('filePath: $filePath, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -2631,6 +2680,7 @@ typedef $$ProjectsTableTableCreateCompanionBuilder =
       required String id,
       required String name,
       Value<String> description,
+      Value<String?> filePath,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -2640,6 +2690,7 @@ typedef $$ProjectsTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<String> description,
+      Value<String?> filePath,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -2666,6 +2717,11 @@ class $$ProjectsTableTableFilterComposer
 
   ColumnFilters<String> get description => $composableBuilder(
     column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2704,6 +2760,11 @@ class $$ProjectsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2734,6 +2795,9 @@ class $$ProjectsTableTableAnnotationComposer
     column: $table.description,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2780,6 +2844,7 @@ class $$ProjectsTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> description = const Value.absent(),
+                Value<String?> filePath = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -2787,6 +2852,7 @@ class $$ProjectsTableTableTableManager
                 id: id,
                 name: name,
                 description: description,
+                filePath: filePath,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -2796,6 +2862,7 @@ class $$ProjectsTableTableTableManager
                 required String id,
                 required String name,
                 Value<String> description = const Value.absent(),
+                Value<String?> filePath = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -2803,6 +2870,7 @@ class $$ProjectsTableTableTableManager
                 id: id,
                 name: name,
                 description: description,
+                filePath: filePath,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,

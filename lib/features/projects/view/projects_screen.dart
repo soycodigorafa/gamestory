@@ -9,12 +9,29 @@ import '../../../shared/widgets/gs_empty_state.dart';
 import '../../../shared/widgets/gs_text_field.dart';
 import '../../export/providers/import_provider.dart';
 import '../providers/project_list_provider.dart';
+import '../providers/project_startup_provider.dart';
 
 class ProjectsScreen extends ConsumerWidget {
   const ProjectsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(projectStartupProvider, (_, next) {
+      next.whenData((result) {
+        if (result.removedProjectNames.isNotEmpty && context.mounted) {
+          final names = result.removedProjectNames.join(', ');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '${result.removedProjectNames.length} project(s) with missing files were removed: $names',
+              ),
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+      });
+    });
+
     final projectsAsync = ref.watch(projectListProvider);
 
     return Scaffold(
